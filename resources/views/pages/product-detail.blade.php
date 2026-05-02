@@ -1,6 +1,5 @@
-@extends('layout')
+<% layout('layout') %>
 
-@section('content')
 <section class="container" style="padding: 60px 0; background: #D9D9D9; min-height: 100vh;">
     <div class="grid" style="grid-template-columns: 1fr 450px; gap: 40px; align-items: start;">
         
@@ -10,25 +9,21 @@
                 <div style="position: absolute; top: -10px; left: -10px; width: 40px; height: 40px; border-top: 4px solid black; border-left: 4px solid black; z-index: 5;"></div>
                 <div class="offset-box" style="width: 100%;">
                     <div style="border: 4px solid black; background: #000; position: relative; line-height: 0;">
-                        <img src="{{ $product->image ?? ($product->images->first()->image_path ?? '') }}" alt="{{ $product->name }}" style="width: 100%; border: 4px solid black; filter: contrast(110%);">
+                        <img src="<%= product.image %>" alt="<%= product.name %>" style="width: 100%; border: 4px solid black; filter: contrast(110%);">
                         <div style="position: absolute; bottom: 40px; right: 0; background: var(--neon-green); border: 4px solid black; padding: 10px 30px; transform: translateX(20px);">
-                            <h2 style="font-size: 3rem; line-height: 1; margin: 0; font-weight: 900;">{{ formatPrice($product->price) }}</h2>
+                            <h2 style="font-size: 3rem; line-height: 1; margin: 0; font-weight: 900;"><%= formatPrice(product.price) %></h2>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 30px;">
-                @foreach($product->images->slice(1, 2) as $image)
-                    <div style="border: 4px solid black; background: #000; line-height: 0;">
-                        <img src="{{ $image->image_path }}" style="width: 100%; filter: grayscale(100%) contrast(150%);">
-                    </div>
-                @endforeach
-                @if($product->images->count() < 3)
-                    <div style="border: 4px solid black; background: #000; line-height: 0;">
-                        <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&q=80" style="width: 100%; filter: grayscale(100%) contrast(150%);">
-                    </div>
-                @endif
+                <div style="border: 4px solid black; background: #000; line-height: 0;">
+                    <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&q=80" style="width: 100%; filter: grayscale(100%) contrast(150%);">
+                </div>
+                <div style="border: 4px solid black; background: #000; line-height: 0; transform: rotate(2deg);">
+                    <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&q=80" style="width: 100%; filter: brightness(0.8) contrast(1.2);">
+                </div>
             </div>
         </div>
 
@@ -42,7 +37,7 @@
 
             <div style="margin-bottom: 30px;">
                 <p class="brutal-font" style="font-size: 0.8rem; margin-bottom: 5px; opacity: 0.6;">CYBER_CORE</p>
-                <h1 style="font-size: 3.5rem; line-height: 1; font-weight: 900; letter-spacing: -2px; margin: 0;">{!! str_replace(' ', '<br>', $product->name) !!}</h1>
+                <h1 style="font-size: 3.5rem; line-height: 1; font-weight: 900; letter-spacing: -2px; margin: 0;"><%= product.name.replace(' ', '\n') %></h1>
             </div>
 
             <!-- SPECIFICATIONS PANEL -->
@@ -77,23 +72,17 @@
                     <a href="#" style="font-size: 0.6rem; color: #888; font-weight: 900;">SIZE_GUIDE.PDF</a>
                 </div>
                 <div class="flex" style="gap: 10px;">
-                    @foreach(['S', 'M', 'L', 'XL', 'XXL'] as $size)
-                        <button class="brutal-button" style="width: 50px; height: 50px; padding: 0; font-size: 1rem; display: flex; align-items: center; justify-content: center; background: {{ $size === 'M' ? 'black' : 'white' }}; color: {{ $size === 'M' ? 'white' : 'black' }};">
-                            {{ $size }}
+                    <% ['S', 'M', 'L', 'XL', 'XXL'].forEach(size => { %>
+                        <button class="brutal-button" style="width: 50px; height: 50px; padding: 0; font-size: 1rem; display: flex; align-items: center; justify-content: center; background: <%= size === 'M' ? 'black' : 'white' %>; color: <%= size === 'M' ? 'white' : 'black' %>;">
+                            <%= size %>
                         </button>
-                    @endforeach
+                    <% }) %>
                 </div>
             </div>
 
             <!-- ACTIONS -->
             <div style="display: flex; flex-direction: column; gap: 15px;">
-                <button class="brutal-button buy-btn" 
-                        data-id="{{ $product->id }}"
-                        data-name="{{ $product->name }}"
-                        data-price="{{ $product->price }}"
-                        data-image="{{ $product->image ?? ($product->images->first()->image_path ?? '') }}"
-                        data-category="{{ $product->category }}"
-                        style="background: var(--neon-green); color: black; font-size: 2.5rem; width: 100%; padding: 25px 0; display: flex; align-items: center; justify-content: space-between; padding-left: 30px; padding-right: 30px;">
+                <button class="brutal-button buy-btn" style="background: var(--neon-green); color: black; font-size: 2.5rem; width: 100%; padding: 25px 0; display: flex; align-items: center; justify-content: space-between; padding-left: 30px; padding-right: 30px;">
                     <span style="font-style: italic;">ADD_TO_BAG</span>
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                 </button>
@@ -109,4 +98,3 @@
 
     </div>
 </section>
-@endsection

@@ -1,9 +1,8 @@
-@extends('layout')
+<% layout('layout') %>
 
-@section('content')
 <section class="hero-banner-wrap" style="border-bottom: 10px solid var(--brutal-black); background: var(--brutal-black); overflow: hidden;">
     <div style="position: relative; height: 75vh; min-height: 500px; width: 100%;">
-        <img src="{{ asset('images/hero.jpg') }}" 
+        <img src="<%= asset('images/hero.jpg') %>" 
              onerror="this.src='https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=2000&auto=format&fit=crop'"
              alt="System Hero v1" 
              style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9; filter: grayscale(1) contrast(1.2);">
@@ -48,9 +47,8 @@
     </div>
     
     <div class="grid product-grid">
-        @foreach($products->take(3) as $product)
-            <x-product-card :product="$product" />
-        @endforeach
+        <% products.slice(0, 3).forEach(product => { %>
+            <%- include('../components/product-card.blade.php', { product: product }) %>
+        <% }) %>
     </div>
 </section>
-@endsection
