@@ -1,4 +1,4 @@
-@extends('layouts.layout')
+@extends('layout')
 
 @section('content')
 
@@ -83,7 +83,7 @@
                 <div style="display: grid; gap: 15px;">
                     <div>
                         <span style="display: block; font-weight: 900; font-size: 0.8rem; color: rgba(0,0,0,0.6);">ID_TAG</span>
-                        <span class="brutal-font" style="font-size: 1.5rem;">{{ Auth::user()->name }}</span>
+                        <span class="brutal-font" style="font-size: 1.5rem;">{{ Auth::user()->username }}</span>
                     </div>
                     <div>
                         <span style="display: block; font-weight: 900; font-size: 0.8rem; color: rgba(0,0,0,0.6);">COMM_CHANNEL</span>
@@ -131,7 +131,7 @@
                                 @endphp
                                 <tr>
                                     <td style="border-left: none; {{ $isLast ? 'border-bottom: none;' : '' }} font-family: monospace; font-weight: 900;">
-                                        #{{ $order->order_code }}
+                                        #{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}
                                     </td>
                                     <td class="brutal-font" style="{{ $isLast ? 'border-bottom: none;' : '' }}">
                                         Rp {{ number_format($order->total_price, 0, ',', '.') }}
@@ -171,9 +171,9 @@
                 <div style="display: grid; gap: 20px;">
                     <div style="display: grid; gap: 8px;">
                         <label class="brutal-font" style="font-size: 1rem;">USERNAME</label>
-                        <input type="text" name="name" value="{{ old('name', Auth::user()->name) }}"
-                            style="width: 100%; border: 4px solid {{ $errors->has('name') ? 'red' : 'black' }}; padding: 15px; font-family: inherit; font-weight: 900; outline: none;">
-                        @error('name')
+                        <input type="text" name="username" value="{{ old('username', Auth::user()->username) }}"
+                            style="width: 100%; border: 4px solid {{ $errors->has('username') ? 'red' : 'black' }}; padding: 15px; font-family: inherit; font-weight: 900; outline: none;">
+                        @error('username')
                             <span style="color: red; font-weight: 900; font-size: 0.8rem;">{{ $message }}</span>
                         @enderror
                     </div>

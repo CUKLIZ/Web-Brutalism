@@ -4,25 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Order extends Model
+class Address extends Model
 {
     use HasFactory;
 
-    // protected $fillable = ['user_id', 'total_price', 'status'];
-
-    // public function items(): HasMany
-    // {
-    //     return $this->hasMany(OrderItem::class);
-    // }
-
     protected $fillable = [
         'user_id',
-        'total_price',
-        'status',
+        'recipient_name',
+        'phone',
+        'street',
+        'city',
+        'postal_code',
+        'is_default',
     ];
- 
+
+    protected $casts = [
+        'is_default' => 'boolean',
+    ];
+
     /**
      * Relasi ke User.
      */
