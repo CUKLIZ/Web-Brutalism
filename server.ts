@@ -2,7 +2,6 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import engine from "ejs-mate";
-import { getProducts, getProductById, seedProducts } from "./services/db.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,39 +27,40 @@ async function startServer() {
     next();
   });
 
-  // Seed data if empty (simplified check)
-  const existingProducts = await getProducts();
-  if (existingProducts.length === 0) {
-    await seedProducts();
-  }
+  // Sample data with categories
+  const products = [
+    { id: 1, name: "BRUTAL TEE", price: 675000, category: "T-SHIRT", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80" },
+    { id: 2, name: "VOID CAPSULE", price: 1800000, category: "ACCESSORIES", image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&q=80" },
+    { id: 3, name: "LOOT BAG", price: 1275000, category: "ACCESSORIES", image: "https://images.unsplash.com/photo-1544816153-12ad5d714b21?w=400&q=80" },
+    { id: 4, name: "RAW DENIM", price: 2850000, category: "PANTS", image: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&q=80" },
+    { id: 5, name: "VOID HOODIE", price: 1425000, category: "T-SHIRT", image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&q=80" },
+    { id: 6, name: "TECH JACKET", price: 3150000, category: "OUTERWEAR", image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&q=80" },
+  ];
 
-  app.get("/", async (req, res) => {
-    const products = await getProducts();
+  const categories = ["ALL", ...new Set(products.map(p => p.category))];
+
+  app.get("/", (req, res) => {
     res.render("pages/home", { products });
   });
 
-  app.get("/products", async (req, res) => {
+  app.get("/products", (req, res) => {
     const { q, category } = req.query;
-    const allProducts = await getProducts();
-    
-    const categories = ["ALL", ...new Set(allProducts.map((p: any) => p.category))];
     
     res.render("pages/products", { 
-      products: allProducts, 
+      products: products, 
       categories,
       activeCategory: category || "ALL",
       searchQuery: q || ""
     });
   });
 
-  app.get("/product/:id", async (req, res) => {
-    const product = await getProductById(req.params.id);
+  app.get("/product/:id", (req, res) => {
+    const product = products.find(p => p.id === parseInt(req.params.id));
     res.render("pages/product-detail", { product });
   });
 
-  app.get("/cart", async (req, res) => {
-    const products = await getProducts();
-    res.render("pages/cart", { cartItems: [products[0], products[1]].filter(Boolean) });
+  app.get("/cart", (req, res) => {
+    res.render("pages/cart", { cartItems: [products[0], products[1]] });
   });
 
   app.get("/login", (req, res) => {
@@ -71,19 +71,20 @@ async function startServer() {
     res.render("pages/register");
   });
 
-  // Admin Routes
-  app.get("/admin", async (req, res) => {
-    const products = await getProducts();
+  // Admin Routes (Dummy Data Only)
+  app.get("/admin", (req, res) => {
     res.render("admin/dashboard", { path: '/admin', products });
   });
 
-  app.get("/admin/products", async (req, res) => {
-    const products = await getProducts();
-    // Transform stock for admin view if needed
-    const adminProducts = products.map((p: any) => ({
-      ...p,
-      stockStr: p.stock ? Object.entries(p.stock).map(([s, q]) => `${s}:${q}`).join(' ') : 'N/A'
-    }));
+  app.get("/admin/products", (req, res) => {
+    const adminProducts = [
+      { id: 101, name: "VOID_CARGO", price: 2475000, category: "PANTS", stock: "S:5 M:12 L:8" },
+      { id: 102, name: "SIGNATURE_TEE", price: 825000, category: "T-SHIRT", stock: "S:20 M:0 L:15" },
+      { id: 103, name: "HACKER_HOODIE", price: 1425000, category: "OUTERWEAR", stock: "S:8 M:8 L:8" },
+      { id: 104, name: "DATA_CAP", price: 525000, category: "ACCESSORIES", stock: "OS:45" },
+      { id: 105, name: "VOID_RUNNER_V1", price: 3150000, category: "SHOES", stock: "40:2 41:5 42:3" },
+      { id: 106, name: "NEON_BEANIE", price: 675000, category: "ACCESSORIES", stock: "OS:12" },
+    ];
     res.render("admin/products", { path: '/admin/products', products: adminProducts });
   });
 

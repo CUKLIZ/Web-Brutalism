@@ -9,7 +9,7 @@
                 <div style="position: absolute; top: -10px; left: -10px; width: 40px; height: 40px; border-top: 4px solid black; border-left: 4px solid black; z-index: 5;"></div>
                 <div class="offset-box" style="width: 100%;">
                     <div style="border: 4px solid black; background: #000; position: relative; line-height: 0;">
-                        <img src="<%= product.images && product.images[0] ? product.images[0] : product.image %>" alt="<%= product.name %>" style="width: 100%; border: 4px solid black; filter: contrast(110%);">
+                        <img src="<%= product.image %>" alt="<%= product.name %>" style="width: 100%; border: 4px solid black; filter: contrast(110%);">
                         <div style="position: absolute; bottom: 40px; right: 0; background: var(--neon-green); border: 4px solid black; padding: 10px 30px; transform: translateX(20px);">
                             <h2 style="font-size: 3rem; line-height: 1; margin: 0; font-weight: 900;"><%= formatPrice(product.price) %></h2>
                         </div>
@@ -19,10 +19,10 @@
 
             <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 30px;">
                 <div style="border: 4px solid black; background: #000; line-height: 0;">
-                    <img src="<%= product.images && product.images[1] ? product.images[1] : 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&q=80' %>" style="width: 100%; filter: grayscale(100%) contrast(150%);">
+                    <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&q=80" style="width: 100%; filter: grayscale(100%) contrast(150%);">
                 </div>
                 <div style="border: 4px solid black; background: #000; line-height: 0; transform: rotate(2deg);">
-                    <img src="<%= product.images && product.images[2] ? product.images[2] : 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&q=80' %>" style="width: 100%; filter: brightness(0.8) contrast(1.2);">
+                    <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&q=80" style="width: 100%; filter: brightness(0.8) contrast(1.2);">
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
                     <a href="#" style="font-size: 0.6rem; color: #888; font-weight: 900;">SIZE_GUIDE.PDF</a>
                 </div>
                 <div class="flex" style="gap: 10px;">
-                    <% ['S', 'M', 'L', 'XL'].forEach(size => { %>
+                    <% ['S', 'M', 'L', 'XL', 'XXL'].forEach(size => { %>
                         <button class="brutal-button" style="width: 50px; height: 50px; padding: 0; font-size: 1rem; display: flex; align-items: center; justify-content: center; background: <%= size === 'M' ? 'black' : 'white' %>; color: <%= size === 'M' ? 'white' : 'black' %>;">
                             <%= size %>
                         </button>
