@@ -2,9 +2,13 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import engine from "ejs-mate";
+import knex from "knex";
+import config from "./knexfile.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const db = knex(config);
 
 async function startServer() {
   const app = express();
@@ -16,51 +20,92 @@ async function startServer() {
   app.set("views", path.join(__dirname, "resources/views"));
 
   app.use(express.static(path.join(__dirname, "public")));
+  app.use(express.json());
 
   app.use((req, res, next) => {
     res.locals.path = req.path;
     res.locals.asset = (file: string) => `/${file.startsWith('/') ? file.slice(1) : file}`;
     res.locals.formatPrice = (price: number | string) => {
       const numPrice = typeof price === 'string' ? parseFloat(price) : price;
-      return 'Rp ' + numPrice.toLocaleString('id-ID');
+      return 'Rp ' + (numPrice || 0).toLocaleString('id-ID');
     };
     next();
   });
 
-  // Sample data with categories
-  const products = [
-    { id: 1, name: "BRUTAL TEE", price: 675000, category: "T-SHIRT", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80" },
-    { id: 2, name: "VOID CAPSULE", price: 1800000, category: "ACCESSORIES", image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&q=80" },
-    { id: 3, name: "LOOT BAG", price: 1275000, category: "ACCESSORIES", image: "https://images.unsplash.com/photo-1544816153-12ad5d714b21?w=400&q=80" },
-    { id: 4, name: "RAW DENIM", price: 2850000, category: "PANTS", image: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&q=80" },
-    { id: 5, name: "VOID HOODIE", price: 1425000, category: "T-SHIRT", image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&q=80" },
-    { id: 6, name: "TECH JACKET", price: 3150000, category: "OUTERWEAR", image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&q=80" },
-  ];
+  // Helper to get products with their first image
+  const getProductsWithImages = async (query?: any) => {
+    let q = db('products')
+      .leftJoin('product_images', 'products.id', 'product_images.product_id')
+      .select('products.*', db.raw('MIN(product_images.image_path) as image'))
+      .groupBy('products.id');
 
-  const categories = ["ALL", ...new Set(products.map(p => p.category))];
+    if (query?.category && query.category !== 'ALL') {
+      q = q.where('category', query.category);
+    }
 
-  app.get("/", (req, res) => {
-    res.render("pages/home", { products });
+    if (query?.q) {
+      q = q.where('name', 'like', `%${query.q}%`);
+    }
+
+    return await q;
+  };
+
+  app.get("/", async (req, res) => {
+    try {
+      const products = await getProductsWithImages();
+      res.render("pages/home", { products });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Database Error");
+    }
   });
 
-  app.get("/products", (req, res) => {
-    const { q, category } = req.query;
-    
-    res.render("pages/products", { 
-      products: products, 
-      categories,
-      activeCategory: category || "ALL",
-      searchQuery: q || ""
-    });
+  app.get("/products", async (req, res) => {
+    try {
+      const { q, category } = req.query;
+      const products = await getProductsWithImages({ q, category });
+      const rawCategories = await db('products').distinct('category').pluck('category');
+      const categories = ["ALL", ...rawCategories];
+      
+      res.render("pages/products", { 
+        products, 
+        categories,
+        activeCategory: (category as string) || "ALL",
+        searchQuery: (q as string) || ""
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Database Error");
+    }
   });
 
-  app.get("/product/:id", (req, res) => {
-    const product = products.find(p => p.id === parseInt(req.params.id));
-    res.render("pages/product-detail", { product });
+  app.get("/product/:id", async (req, res) => {
+    try {
+      const product = await db('products').where('id', req.params.id).first();
+      if (!product) return res.status(404).send("Product Not Found");
+      
+      const images = await db('product_images').where('product_id', product.id).pluck('image_path');
+      const stockResults = await db('product_size_stock')
+        .join('sizes', 'product_size_stock.size_id', 'sizes.id')
+        .where('product_id', product.id)
+        .select('sizes.name', 'product_size_stock.stock');
+      
+      const stock: any = {};
+      stockResults.forEach(s => stock[s.name.toLowerCase()] = s.stock);
+
+      res.render("pages/product-detail", { 
+        product: { ...product, image: images[0], images, stock } 
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Database Error");
+    }
   });
 
-  app.get("/cart", (req, res) => {
-    res.render("pages/cart", { cartItems: [products[0], products[1]] });
+  app.get("/cart", async (req, res) => {
+    // Still dummy for now as no session/auth logic requested yet
+    const products = await getProductsWithImages();
+    res.render("pages/cart", { cartItems: products.slice(0, 2) });
   });
 
   app.get("/login", (req, res) => {
@@ -71,38 +116,62 @@ async function startServer() {
     res.render("pages/register");
   });
 
-  // Admin Routes (Dummy Data Only)
-  app.get("/admin", (req, res) => {
-    res.render("admin/dashboard", { path: '/admin', products });
+  // Admin Routes
+  app.get("/admin", async (req, res) => {
+    try {
+      const products = await getProductsWithImages();
+      res.render("admin/dashboard", { path: '/admin', products });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Database Error");
+    }
   });
 
-  app.get("/admin/products", (req, res) => {
-    const adminProducts = [
-      { id: 101, name: "VOID_CARGO", price: 2475000, category: "PANTS", stock: "S:5 M:12 L:8" },
-      { id: 102, name: "SIGNATURE_TEE", price: 825000, category: "T-SHIRT", stock: "S:20 M:0 L:15" },
-      { id: 103, name: "HACKER_HOODIE", price: 1425000, category: "OUTERWEAR", stock: "S:8 M:8 L:8" },
-      { id: 104, name: "DATA_CAP", price: 525000, category: "ACCESSORIES", stock: "OS:45" },
-      { id: 105, name: "VOID_RUNNER_V1", price: 3150000, category: "SHOES", stock: "40:2 41:5 42:3" },
-      { id: 106, name: "NEON_BEANIE", price: 675000, category: "ACCESSORIES", stock: "OS:12" },
-    ];
-    res.render("admin/products", { path: '/admin/products', products: adminProducts });
+  app.get("/admin/products", async (req, res) => {
+    try {
+      const dbProducts = await db('products').select('*');
+      const products = await Promise.all(dbProducts.map(async (p) => {
+        const images = await db('product_images').where('product_id', p.id).pluck('image_path');
+        const stockResults = await db('product_size_stock')
+          .join('sizes', 'product_size_stock.size_id', 'sizes.id')
+          .where('product_id', p.id)
+          .select('sizes.name', 'product_size_stock.stock');
+        
+        const stockStr = stockResults.map(s => `${s.name}:${s.stock}`).join(' ');
+        return { ...p, image: images[0], stock: stockStr };
+      }));
+      
+      res.render("admin/products", { path: '/admin/products', products });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Database Error");
+    }
   });
 
   app.get("/admin/add-product", (req, res) => {
     res.render("admin/add_product", { path: '/admin/products' });
   });
 
-  app.get("/admin/edit-product/:id", (req, res) => {
-    // Single dummy product for edit view
-    const product = { 
-      id: req.params.id, 
-      name: "VOID_CARGO", 
-      price: 2475000, 
-      category: "PANTS", 
-      stock: { s: 5, m: 12, l: 8, xl: 2 } 
-    };
-    res.render("admin/edit_product", { path: '/admin/products', product });
+  app.get("/admin/edit-product/:id", async (req, res) => {
+    try {
+      const product = await db('products').where('id', req.params.id).first();
+      if (!product) return res.status(404).send("Not Found");
+
+      const stockResults = await db('product_size_stock')
+        .join('sizes', 'product_size_stock.size_id', 'sizes.id')
+        .where('product_id', product.id)
+        .select('sizes.name', 'product_size_stock.stock');
+      
+      const stock: any = {};
+      stockResults.forEach(s => stock[s.name.toLowerCase()] = s.stock);
+
+      res.render("admin/edit_product", { path: '/admin/products', product: { ...product, stock } });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Database Error");
+    }
   });
+
 
   app.get("/checkout", (req, res) => {
     res.render("pages/checkout");
