@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LOOT VAULT | NEO-BRUTALIST E-COMMERCE</title>
-    <link rel="stylesheet" href="/css/style.css">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
-    <%- include('partials/navbar.blade.php') %>
+    @include('partials.navbar')
 
     <main>
-        <%- body %>
+        @yield('content')
     </main>
 
-    <%- include('partials/footer.blade.php') %>
+    @include('partials.footer')
 
-    <script src="/js/app.js"></script>
+    <!-- Preview Shim Helper -->
+    <script>
+        // If Vite is not running (production or shim), we might need fallback paths
+        // But for this preview, we'll assume the shim handles the CSS/JS
+    </script>
 </body>
 </html>
