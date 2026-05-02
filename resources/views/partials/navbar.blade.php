@@ -19,12 +19,27 @@
         <div class="flex" style="gap: 10px; align-items: center;">
             <a href="/products" class="brutal-font nav-link {{ request()->is('products') ? 'active' : '' }}">VAULT</a>
             <div class="nav-separator"></div>
-            <a href="/cart" class="brutal-font nav-link {{ request()->is('cart') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 8px;">
-                YOUR LOOT 
-                <span class="cart-badge">2</span>
-            </a>
-            <div class="nav-separator"></div>
-            <a href="/login" class="brutal-font nav-link {{ request()->is('login') ? 'active' : '' }}">LOGIN</a>
+
+            @auth
+                <a href="/cart" class="brutal-font nav-link {{ request()->is('cart') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 8px;">
+                    YOUR LOOT 
+                    <span class="cart-badge">2</span>
+                </a>
+                <div class="nav-separator"></div>
+                {{-- <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                    @csrf
+                    <button type="submit" class="brutal-font nav-link" style="background: none; border: none; cursor: pointer; font-size: inherit; padding: 0;">
+                        LOGOUT_[{{ Auth::user()->username }}]
+                    </button>
+                </form> --}}
+                <a href="/profile" class="brutal-font nav-link <%= path === '/profile' ? 'active' : '' %>">PROFILE</a>
+                {{-- <div class="nav-separator"></div> --}}
+            @else
+                <a href="/login" class="brutal-font nav-link {{ request()->is('login') ? 'active' : '' }}">LOGIN</a>
+                <div class="nav-separator"></div>
+                {{-- <a href="/register" class="brutal-font nav-link {{ request()->is('register') ? 'active' : '' }}">REGISTER</a> --}}
+            @endauth
+
             <div class="nav-separator"></div>
             <a href="/admin" class="brutal-font nav-link" style="background: black; color: white;">[GO_TO_ADMIN]</a>
         </div>
