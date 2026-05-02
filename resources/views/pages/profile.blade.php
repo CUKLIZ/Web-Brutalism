@@ -1,5 +1,16 @@
 <% layout('layout') %>
 
+<style>
+    .loot-table tbody tr {
+        transition: background-color 0.1s ease;
+        cursor: default;
+    }
+    .loot-table tbody tr:hover {
+        background-color: var(--accent-yellow) !important;
+    }
+    /* Ensure the last row doesn't lose its border logic if needed */
+</style>
+
 <div class="container" style="padding-top: 60px; padding-bottom: 100px;">
     <div style="margin-bottom: 60px;">
         <h1 style="font-size: 5rem; line-height: 0.9; margin-bottom: 20px; text-shadow: 6px 6px 0px var(--brutal-black);">USER_PROFILE</h1>
@@ -11,6 +22,21 @@
     <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;">
         <!-- Left Side: User Info & Form -->
         <div class="grid" style="gap: 40px;">
+            <!-- Section 00: AVATAR UPLOAD -->
+            <section class="brutal-card" style="background: var(--neon-green); display: flex; align-items: center; gap: 30px;">
+                <div style="width: 120px; height: 120px; border: 4px solid black; background: white; flex-shrink: 0; display: flex; justify-content: center; align-items: center; box-shadow: 4px 4px 0px black;">
+                    <span style="font-weight: 900; font-size: 0.7rem; text-align: center;">[NO_IMAGE_DATA]</span>
+                </div>
+                <div style="flex-grow: 1;">
+                    <h2 style="font-size: 1.5rem; border-bottom: 4px solid black; padding-bottom: 5px; margin-bottom: 15px;">00_IDENTITY_VISUAL</h2>
+                    <div style="display: grid; gap: 10px;">
+                        <input type="file" id="avatar-input" style="display: none;">
+                        <label for="avatar-input" class="brutal-button" style="display: block; width: 100%; text-align: center; font-size: 0.8rem; cursor: pointer; padding: 10px;">SELECT_LOCAL_FILE</label>
+                        <button class="brutal-button" style="background: black; color: white; width: 100%; font-size: 0.8rem; padding: 10px;">TRIGGER_UPLOAD</button>
+                    </div>
+                </div>
+            </section>
+
             <!-- Section A: USER INFO -->
             <section class="brutal-card" style="background: var(--accent-yellow);">
                 <h2 style="font-size: 2rem; border-bottom: 4px solid black; padding-bottom: 10px; margin-bottom: 20px;">01_PERSONAL_DATA</h2>
