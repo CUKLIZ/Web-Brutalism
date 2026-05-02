@@ -1,7 +1,8 @@
-<% layout('admin/layout') %>
+@extends('admin.layout')
 
+@section('content')
 <div class="admin-hero-module" style="margin-bottom: 50px; border: 4px solid #000; box-shadow: 12px 12px 0px #000; background: #000; overflow: hidden; position: relative; height: 250px;">
-    <img src="<%= asset('images/admin_hero.jpg') %>" alt="System Dashboard Alpha" 
+    <img src="{{ asset('images/admin_hero.jpg') }}" alt="System Dashboard Alpha" 
          onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2000&auto=format&fit=crop'"
          style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7; filter: grayscale(1) contrast(1.2);">
     
@@ -29,7 +30,7 @@
     <div class="admin-stat-card">
         <div style="position: absolute; top: 0; right: 0; background: #000; color: #fff; padding: 2px 8px; font-size: 0.45rem; font-weight: 900;">LIVE_DATA</div>
         <p style="font-size: 0.7rem; font-weight: 900; margin-bottom: 15px; border-bottom: 2px solid #000; display: inline-block;">[TOTAL_PRODUCTS]</p>
-        <h2 style="font-size: 3.5rem; line-height: 1; margin: 0; font-weight: 900;">24</h2>
+        <h2 style="font-size: 3.5rem; line-height: 1; margin: 0; font-weight: 900;">{{ count($products) }}</h2>
     </div>
     <div class="admin-stat-card" style="background: var(--neon-green);">
         <div style="position: absolute; top: 0; right: 0; background: #000; color: #fff; padding: 2px 8px; font-size: 0.45rem; font-weight: 900;">ACTIVE_TX</div>
@@ -112,8 +113,9 @@
     </div>
     
     <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
-        <% products.slice(0, 3).forEach(product => { %>
-            <%- include('../components/product-card.blade.php', { product: product, isAdmin: true }) %>
-        <% }) %>
+        @foreach($products->take(3) as $product)
+            <x-product-card :product="$product" isAdmin="true" />
+        @endforeach
     </div>
 </section>
+@endsection
