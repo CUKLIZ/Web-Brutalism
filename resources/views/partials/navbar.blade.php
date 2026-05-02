@@ -24,6 +24,8 @@
                 <span class="cart-badge">2</span>
             </a>
             <div class="nav-separator"></div>
+            <a href="/profile" class="brutal-font nav-link <%= path === '/profile' ? 'active' : '' %>">PROFILE</a>
+            <div class="nav-separator"></div>
             <a href="/login" class="brutal-font nav-link <%= path === '/login' ? 'active' : '' %>">LOGIN</a>
             <div class="nav-separator"></div>
             <a href="/admin" class="brutal-font nav-link" style="background: black; color: white;">[GO_TO_ADMIN]</a>

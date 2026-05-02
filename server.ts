@@ -108,6 +108,10 @@ async function startServer() {
     res.render("pages/checkout");
   });
 
+  app.get("/profile", (req, res) => {
+    res.render("pages/profile");
+  });
+
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
