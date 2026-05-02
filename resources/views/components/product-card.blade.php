@@ -13,7 +13,8 @@
         <div style="text-align: right;">
             <span style="font-size: 0.7rem; font-weight: 900; opacity: 0.5; display: block;">[<%= product.category %>]</span>
             <% if (typeof isAdmin !== 'undefined' && isAdmin && product.stock) { %>
-                <span style="font-size: 0.6rem; font-weight: 900; display: block; margin-top: 5px; color: var(--neon-green); background: #000; padding: 2px 5px;"><%= product.stock %></span>
+                <% const stockInfo = typeof product.stock === 'string' ? product.stock : Object.entries(product.stock).map(([s, q]) => `${s}:${q}`).join(' '); %>
+                <span style="font-size: 0.5rem; font-weight: 900; display: block; margin-top: 5px; color: var(--neon-green); background: #000; padding: 2px 5px; white-space: nowrap;"><%= stockInfo %></span>
             <% } else if (typeof isAdmin !== 'undefined' && isAdmin) { %>
                 <span style="font-size: 0.6rem; font-weight: 900; display: block; margin-top: 5px; color: var(--neon-green); background: #000; padding: 2px 5px;">STOCK: 24_UNIT</span>
             <% } else { %>

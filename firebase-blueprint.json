@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "username": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["admin", "customer"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["username", "email", "role"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Store product details",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "price": { "type": "integer" },
+        "category": { "type": "string" },
+        "images": { 
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "stock": {
+          "type": "object",
+          "properties": {
+            "S": { "type": "integer" },
+            "M": { "type": "integer" },
+            "L": { "type": "integer" },
+            "XL": { "type": "integer" }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "price", "category"]
+    },
+    "CartItem": {
+      "title": "Cart Item",
+      "description": "Individual item in a shopping cart",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "size": { "type": "string", "enum": ["S", "M", "L", "XL"] },
+        "quantity": { "type": "integer" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["productId", "size", "quantity"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer purchase record",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "totalPrice": { "type": "integer" },
+        "status": { "type": "string", "enum": ["pending", "paid", "completed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "totalPrice", "status"]
+    },
+    "OrderItem": {
+      "title": "Order Item",
+      "description": "Snapshot of product details at time of order",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "name": { "type": "string" },
+        "size": { "type": "string", "enum": ["S", "M", "L", "XL"] },
+        "quantity": { "type": "integer" },
+        "price": { "type": "integer" }
+      },
+      "required": ["productId", "name", "size", "quantity", "price"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Root collection for users"
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Root collection for products"
+    },
+    "/carts/{userId}/items/{itemId}": {
+      "schema": "CartItem",
+      "description": "Subcollection of items in a user's cart"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Root collection for orders"
+    },
+    "/orders/{orderId}/items/{itemId}": {
+      "schema": "OrderItem",
+      "description": "Subcollection of items in an order"
+    }
+  }
+}

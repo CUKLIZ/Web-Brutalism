@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() { return request.auth != null; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    
+    // Check if user is admin (using a trusted collection)
+    function isAdmin() { 
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // --- Validation Blueprints ---
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['username', 'email', 'role']) &&
+             data.keys().size() == 3 &&
+             data.username is string && data.username.size() <= 50 &&
+             data.email is string && data.email.size() <= 100 &&
+             data.role in ['admin', 'customer'];
+    }
+
+    function isValidProduct(data) {
+      return data.keys().hasAll(['name', 'price', 'category']) &&
+             data.name is string && data.name.size() <= 100 &&
+             data.price is int && data.price >= 0 &&
+             data.category is string && data.category.size() <= 50 &&
+             (!('images' in data) || (data.images is list && data.images.size() <= 10)) &&
+             (!('stock' in data) || (data.stock is map));
+    }
+
+    function isValidCartItem(data) {
+      return data.keys().hasAll(['productId', 'size', 'quantity']) &&
+             data.productId is string &&
+             data.size in ['S', 'M', 'L', 'XL'] &&
+             data.quantity is int && data.quantity > 0;
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll(['userId', 'totalPrice', 'status']) &&
+             data.userId == request.auth.uid &&
+             data.totalPrice is int && data.totalPrice >= 0 &&
+             data.status in ['pending', 'paid', 'completed'];
+    }
+
+    // --- Collection Matches ---
+
+    // Users
+    match /users/{userId} {
+      allow get: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && isOwner(userId) && isValidUser(incoming()) && incoming().role == 'customer';
+      allow update: if isSignedIn() && isOwner(userId) && 
+                      incoming().diff(existing()).affectedKeys().hasOnly(['username', 'email']) &&
+                      isValidUser(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // Products
+    match /products/{productId} {
+      allow read: if true; // Public catalog
+      allow create: if isAdmin() && isValidProduct(incoming());
+      allow update: if isAdmin() && isValidProduct(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // Carts
+    match /carts/{userId}/items/{itemId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidCartItem(incoming());
+      allow update: if isOwner(userId) && isValidCartItem(incoming());
+      allow delete: if isOwner(userId);
+    }
+
+    // Orders
+    match /orders/{orderId} {
+      allow get: if isSignedIn() && (isOwner(existing().userId) || isAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidOrder(incoming());
+      allow update: if isAdmin() && isValidOrder(incoming());
+      allow delete: if isAdmin();
+
+      // Order Items subcollection
+      match /items/{itemId} {
+        allow read: if isSignedIn() && (isOwner(get(/databases/$(database)/documents/orders/$(orderId)).data.userId) || isAdmin());
+        allow create: if isSignedIn() && isOwner(get(/databases/$(database)/documents/orders/$(orderId)).data.userId);
+      }
+    }
+  }
+}
