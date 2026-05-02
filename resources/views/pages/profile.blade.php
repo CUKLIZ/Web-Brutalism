@@ -8,7 +8,26 @@
     .loot-table tbody tr:hover {
         background-color: var(--accent-yellow) !important;
     }
-    /* Ensure the last row doesn't lose its border logic if needed */
+    .address-card-header {
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .address-card-header:hover {
+        background: rgba(0,0,0,0.05);
+    }
+    .address-details {
+        max-height: 1000px;
+        overflow: hidden;
+        transition: max-height 0.3s ease, margin-top 0.3s ease, opacity 0.3s ease;
+    }
+    .address-details.collapsed {
+        max-height: 0;
+        margin-top: 0 !important;
+        opacity: 0;
+        pointer-events: none;
+    }
 </style>
 
 <div class="container" style="padding-top: 60px; padding-bottom: 100px;">
@@ -20,7 +39,7 @@
     </div>
 
     <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;">
-        <!-- Left Side: User Info & Form -->
+        <!-- Left Side: User Info -->
         <div class="grid" style="gap: 40px;">
             <!-- Section 00: AVATAR UPLOAD -->
             <section class="brutal-card" style="background: var(--neon-green); display: flex; align-items: center; gap: 30px;">
@@ -55,33 +74,6 @@
                     </div>
                 </div>
             </section>
-
-            <!-- Section B: EDIT PROFILE FORM -->
-            <section class="brutal-card">
-                <h2 style="font-size: 2rem; border-bottom: 4px solid black; padding-bottom: 10px; margin-bottom: 20px;">02_UPDATE_PROFILE</h2>
-                <div style="display: grid; gap: 20px;">
-                    <div style="display: grid; gap: 8px;">
-                        <label class="brutal-font" style="font-size: 1rem;">USERNAME</label>
-                        <input type="text" value="USERNAME_EXAMPLE" style="width: 100%; border: 4px solid black; padding: 15px; font-family: inherit; font-weight: 900; outline: none;">
-                    </div>
-                    <div style="display: grid; gap: 8px;">
-                        <label class="brutal-font" style="font-size: 1rem;">EMAIL_ADDRESS</label>
-                        <input type="email" value="EMAIL_EXAMPLE" style="width: 100%; border: 4px solid black; padding: 15px; font-family: inherit; font-weight: 900; outline: none;">
-                    </div>
-                    <div style="display: grid; gap: 8px;">
-                        <label class="brutal-font" style="font-size: 1rem;">PASSWORD (SECURE_ENCRYPTION)</label>
-                        <input type="password" placeholder="********" style="width: 100%; border: 4px solid black; padding: 15px; font-family: inherit; font-weight: 900; outline: none;">
-                    </div>
-                    <button class="brutal-button" style="width: 100%; margin-top: 10px;">SAVE_CHANGES</button>
-                </div>
-            </section>
-
-            <!-- Section D: ACTION SECTION -->
-            <section class="brutal-card" style="background: var(--brutal-black); color: white;">
-                <h2 style="font-size: 2rem; border-bottom: 4px solid var(--gallery-white); padding-bottom: 10px; margin-bottom: 20px;">04_DANGER_ZONE</h2>
-                <p style="margin-bottom: 20px; font-weight: 700; opacity: 0.8;">DISCONNECT FROM SYSTEM VAULT TEMPORARILY.</p>
-                <button class="brutal-button" style="background: #FF0000; color: white; width: 100%; border-color: white;">ABORT_SESSION_(LOGOUT)</button>
-            </section>
         </div>
 
         <!-- Right Side: Transaction History -->
@@ -92,8 +84,8 @@
                     <h2 style="font-size: 2rem;">03_TRANSACTION_LOG</h2>
                     <p style="font-size: 0.8rem; font-weight: 900; margin-top: 5px; opacity: 0.7;">RECENT DATA ENTRIES IN VAULT HISTORY</p>
                 </div>
-                <div style="padding: 20px;">
-                    <table class="loot-table" style="margin: 0; border: none;">
+                <div style="padding: 20px; overflow-x: auto;">
+                    <table class="loot-table" style="margin: 0; border: none; width: 100%;">
                         <thead>
                             <tr>
                                 <th style="border-left: none; border-top: none; font-size: 0.7rem; padding: 10px;">ORDER_ID</th>
@@ -138,5 +130,114 @@
                 </div>
             </section>
         </div>
+    </div>
+
+    <!-- SIDE-BY-SIDE SECTION WRAPPERS (FULL WIDTH ROW ON DESKTOP) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(450px, 100%), 1fr)); gap: 40px; align-items: start; margin-top: 40px;">
+        <!-- Section B: EDIT PROFILE FORM -->
+        <section class="brutal-card">
+            <h2 style="font-size: 2rem; border-bottom: 4px solid black; padding-bottom: 10px; margin-bottom: 20px;">02_UPDATE_PROFILE</h2>
+            <div style="display: grid; gap: 20px;">
+                <div style="display: grid; gap: 8px;">
+                    <label class="brutal-font" style="font-size: 1rem;">USERNAME</label>
+                    <input type="text" value="USERNAME_EXAMPLE" style="width: 100%; border: 4px solid black; padding: 15px; font-family: inherit; font-weight: 900; outline: none;">
+                </div>
+                <div style="display: grid; gap: 8px;">
+                    <label class="brutal-font" style="font-size: 1rem;">EMAIL_ADDRESS</label>
+                    <input type="email" value="EMAIL_EXAMPLE" style="width: 100%; border: 4px solid black; padding: 15px; font-family: inherit; font-weight: 900; outline: none;">
+                </div>
+                <div style="display: grid; gap: 8px;">
+                    <label class="brutal-font" style="font-size: 1rem;">PASSWORD (SECURE_ENCRYPTION)</label>
+                    <input type="password" placeholder="********" style="width: 100%; border: 4px solid black; padding: 15px; font-family: inherit; font-weight: 900; outline: none;">
+                </div>
+                <button class="brutal-button" style="width: 100%; margin-top: 10px;">SAVE_CHANGES</button>
+            </div>
+        </section>
+
+        <!-- Section 04: ADDRESS_BOOK -->
+        <section class="brutal-card" style="background: var(--gallery-white);">
+            <h2 style="font-size: 2rem; border-bottom: 4px solid black; padding-bottom: 10px; margin-bottom: 20px;">04_ADDRESS_BOOK</h2>
+            
+            <!-- Address List -->
+            <div style="display: grid; gap: 20px; margin-bottom: 40px;">
+                <div class="address-card" style="border: 4px solid var(--neon-green); padding: 20px; background: white; position: relative;">
+                    <div style="position: absolute; top: -15px; right: 10px; background: var(--neon-green); border: 2px solid black; padding: 2px 10px; font-weight: 900; font-size: 0.6rem; box-shadow: 2px 2px 0px black;">DEFAULT_LOCATION</div>
+                    <div class="address-card-header" onclick="toggleAddress(this)">
+                        <div style="font-weight: 900; font-size: 1.2rem;">JOHN_DOE_HOME</div>
+                        <div style="font-weight: 900; font-size: 1.2rem;">[+/-]</div>
+                    </div>
+                    <div class="address-details">
+                        <div style="font-weight: 700; opacity: 0.7; margin-top: 10px; margin-bottom: 5px;">+62 812-3456-7890</div>
+                        <div style="font-weight: 500; line-height: 1.4;">Jl. Gatot Subroto No. 123, Jakarta Selatan, 12710</div>
+                        <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                            <button style="border: 2px solid black; background: var(--neon-green); color: black; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: default;">[IS_DEFAULT]</button>
+                            <button style="border: 2px solid black; background: black; color: white; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">EDIT</button>
+                            <button style="border: 2px solid black; background: #FF0000; color: white; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">DELETE</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="address-card" style="border: 4px solid black; padding: 20px; background: white; position: relative;">
+                    <div class="address-card-header" onclick="toggleAddress(this)">
+                        <div style="font-weight: 900; font-size: 1.2rem;">OFFICE_HQ</div>
+                        <div style="font-weight: 900; font-size: 1.2rem;">[+/-]</div>
+                    </div>
+                    <div class="address-details">
+                        <div style="font-weight: 700; opacity: 0.7; margin-top: 10px; margin-bottom: 5px;">+62 899-8877-6655</div>
+                        <div style="font-weight: 500; line-height: 1.4;">Green Office Park 9, BSD City, Tangerang, 15345</div>
+                        <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                            <button style="border: 2px solid black; background: white; color: black; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">SET_AS_DEFAULT</button>
+                            <button style="border: 2px solid black; background: black; color: white; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">EDIT</button>
+                            <button style="border: 2px solid black; background: #FF0000; color: white; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">DELETE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function toggleAddress(header) {
+                    const details = header.nextElementSibling;
+                    details.classList.toggle('collapsed');
+                }
+            </script>
+
+            <!-- Add Address Form -->
+            <div style="border: 4px solid black; background: var(--accent-pink); padding: 25px;">
+                <h3 style="font-size: 1.2rem; font-weight: 900; margin-bottom: 20px;">[+]_NEW_DISPATCH_LOCATION</h3>
+                <div style="display: grid; gap: 15px;">
+                    <div style="display: grid; gap: 5px;">
+                        <label style="font-weight: 900; font-size: 0.8rem;">FULL_NAME</label>
+                        <input type="text" placeholder="RECIPIENT_NAME" style="width: 100%; border: 3px solid black; padding: 10px; font-family: inherit; font-weight: 900; outline: none;">
+                    </div>
+                    <div style="display: grid; gap: 5px;">
+                        <label style="font-weight: 900; font-size: 0.8rem;">PHONE_NUMBER</label>
+                        <input type="text" placeholder="+62 ..." style="width: 100%; border: 3px solid black; padding: 10px; font-family: inherit; font-weight: 900; outline: none;">
+                    </div>
+                    <div style="display: grid; gap: 5px;">
+                        <label style="font-weight: 900; font-size: 0.8rem;">STREET_ADDRESS</label>
+                        <textarea placeholder="FULL_ADDRESS_DETAILS" style="width: 100%; border: 3px solid black; padding: 10px; font-family: inherit; font-weight: 900; outline: none; min-height: 80px; resize: vertical;"></textarea>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div style="display: grid; gap: 5px;">
+                            <label style="font-weight: 900; font-size: 0.8rem;">CITY</label>
+                            <input type="text" placeholder="METROPOLIS" style="width: 100%; border: 3px solid black; padding: 10px; font-family: inherit; font-weight: 900; outline: none;">
+                        </div>
+                        <div style="display: grid; gap: 5px;">
+                            <label style="font-weight: 900; font-size: 0.8rem;">POSTAL_CODE</label>
+                            <input type="text" placeholder="XXXXX" style="width: 100%; border: 3px solid black; padding: 10px; font-family: inherit; font-weight: 900; outline: none;">
+                        </div>
+                    </div>
+                    <button class="brutal-button" style="width: 100%; margin-top: 10px; background: black; color: white;">ADD_ADDRESS</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Section D: ACTION SECTION (BOTTOM) -->
+    <div style="margin-top: 40px;">
+        <section class="brutal-card" style="background: var(--brutal-black); color: white;">
+            <h2 style="font-size: 2rem; border-bottom: 4px solid var(--gallery-white); padding-bottom: 10px; margin-bottom: 20px;">05_DANGER_ZONE</h2>
+            <p style="margin-bottom: 20px; font-weight: 700; opacity: 0.8;">DISCONNECT FROM SYSTEM VAULT TEMPORARILY.</p>
+            <button class="brutal-button" style="background: #FF0000; color: white; width: 100%; border-color: white;">ABORT_SESSION_(LOGOUT)</button>
+        </section>
     </div>
 </div>
