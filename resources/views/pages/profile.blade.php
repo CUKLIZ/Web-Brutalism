@@ -28,6 +28,16 @@
         opacity: 0;
         pointer-events: none;
     }
+    .profile-split-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    @media (min-width: 992px) {
+        .profile-split-row {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
 </style>
 
 <div class="container" style="padding-top: 60px; padding-bottom: 100px;">
@@ -133,7 +143,7 @@
     </div>
 
     <!-- SIDE-BY-SIDE SECTION WRAPPERS (FULL WIDTH ROW ON DESKTOP) -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(450px, 100%), 1fr)); gap: 40px; align-items: start; margin-top: 40px;">
+    <div class="profile-split-row" style="align-items: start; margin-top: 40px;">
         <!-- Section B: EDIT PROFILE FORM -->
         <section class="brutal-card">
             <h2 style="font-size: 2rem; border-bottom: 4px solid black; padding-bottom: 10px; margin-bottom: 20px;">02_UPDATE_PROFILE</h2>

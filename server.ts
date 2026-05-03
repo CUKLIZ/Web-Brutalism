@@ -14,8 +14,10 @@ async function startServer() {
   app.engine("blade.php", engine);
   app.set("view engine", "blade.php");
   app.set("views", path.join(__dirname, "resources/views"));
-
+  
   app.use(express.static(path.join(__dirname, "public")));
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
   app.use((req, res, next) => {
     res.locals.path = req.path;
@@ -38,6 +40,9 @@ async function startServer() {
   ];
 
   const categories = ["ALL", ...new Set(products.map(p => p.category))];
+
+  // In-memory "database" for orders
+  let orders: any[] = [];
 
   app.get("/", (req, res) => {
     res.render("pages/home", { products });
@@ -106,6 +111,14 @@ async function startServer() {
 
   app.get("/checkout", (req, res) => {
     res.render("pages/checkout");
+  });
+
+  app.get("/order-success", (req, res) => {
+    res.render("pages/order-success");
+  });
+
+  app.get("/order-success.html", (req, res) => {
+    res.render("pages/order-success");
   });
 
   app.get("/profile", (req, res) => {

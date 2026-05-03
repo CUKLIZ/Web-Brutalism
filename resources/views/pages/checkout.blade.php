@@ -6,22 +6,22 @@
     <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 40px;">
         <div class="brutal-card">
             <h2 style="margin-bottom: 30px;">SECURE_TRANSACTION</h2>
-            <form>
+            <form id="checkout-form" action="/checkout" method="POST">
                 <div style="margin-bottom: 20px;">
                     <label class="brutal-font" style="display: block; margin-bottom: 10px;">FULL NAME</label>
-                    <input type="text" class="brutal-border" style="width: 100%; padding: 15px; font-size: 1.2rem;" placeholder="JOHN_DOE_EXAMPLE">
+                    <input type="text" name="full_name" class="brutal-border" style="width: 100%; padding: 15px; font-size: 1.2rem;" placeholder="JOHN_DOE_EXAMPLE" required>
                 </div>
                 <div style="margin-bottom: 20px;">
                     <label class="brutal-font" style="display: block; margin-bottom: 10px;">SELECT ADDRESS</label>
-                    <select class="brutal-border" style="width: 100%; padding: 15px; font-size: 1rem; font-family: inherit; font-weight: 900; background: white; appearance: none; cursor: pointer;">
-                        <option value="home">HOME - Street of Ashes 123</option>
-                        <option value="office">OFFICE - Neo District 45</option>
-                        <option value="vault">VAULT_LAB - Sector 7G, Industrial Way</option>
+                    <select name="address" class="brutal-border" style="width: 100%; padding: 15px; font-size: 1rem; font-family: inherit; font-weight: 900; background: white; appearance: none; cursor: pointer;">
+                        <option value="HOME - Street of Ashes 123">HOME - Street of Ashes 123</option>
+                        <option value="OFFICE - Neo District 45">OFFICE - Neo District 45</option>
+                        <option value="VAULT_LAB - Sector 7G, Industrial Way">VAULT_LAB - Sector 7G, Industrial Way</option>
                     </select>
                 </div>
                 <div style="margin-bottom: 20px;">
                     <label class="brutal-font" style="display: block; margin-bottom: 10px;">PAYMENT METHOD</label>
-                    <select name="payment_method" id="payment_method" class="brutal-border" style="width: 100%; padding: 15px; font-size: 1.2rem; font-family: inherit; font-weight: 900; background: white; appearance: none; cursor: pointer;">
+                    <select name="payment_method" id="payment_method" class="brutal-border" style="width: 100%; padding: 15px; font-size: 1.2rem; font-family: inherit; font-weight: 900; background: white; appearance: none; cursor: pointer;" required>
                         <option value="">-- SELECT_PAYMENT --</option>
                         <option value="bank_transfer">Bank Transfer</option>
                         <option value="qris">QRIS</option>
@@ -59,8 +59,50 @@
                         document.getElementById('qris_placeholder').style.display = method === 'qris' ? 'block' : 'none';
                         document.getElementById('redirect_msg').style.display = ['dana', 'ovo', 'gopay'].includes(method) ? 'block' : 'none';
                     });
+
+                    function processCheckout() {
+                        const form = document.getElementById('checkout-form');
+                        if (!form.checkValidity()) {
+                            form.reportValidity();
+                            return;
+                        }
+
+                        const formData = new FormData(form);
+                        const orderId = 'VX-' + Date.now().toString().slice(-6);
+                        
+                        // Simulation of cart items
+                        const cartItems = [
+                            { name: "BRUTAL TEE", price: 675000 },
+                            { name: "VOID CAPSULE", price: 1800000 }
+                        ];
+                        const total = 2475000;
+
+                        const order = {
+                            id: orderId,
+                            status: 'PENDING',
+                            fullName: formData.get('full_name'),
+                            address: formData.get('address'),
+                            paymentMethod: formData.get('payment_method'),
+                            bank: formData.get('bank'),
+                            items: cartItems,
+                            total: total,
+                            createdAt: new Date().toISOString(),
+                            expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString()
+                        };
+
+                        // Save to localStorage
+                        let orders = JSON.parse(localStorage.getItem('brutal_orders') || '[]');
+                        orders.push(order);
+                        localStorage.setItem('brutal_orders', JSON.stringify(orders));
+
+                        // Clear cart
+                        localStorage.removeItem('cart');
+
+                        // Redirect
+                        window.location.href = `/order-success.html?id=${orderId}`;
+                    }
                 </script>
-                <button type="button" onclick="window.BrutalModal.confirm('FINALIZE_PAYMENT?', 'TRANSACTION WILL BE PROCESSED IMMEDIATELY.', () => { window.BrutalModal.show({title: 'SUCCESS', message: 'TRANSACTION_COMPLETE_VAULT_UPDATED', tag: 'SYNC_DONE'}); }, 'PROCESS', 'HOLD')" class="brutal-button" style="width: 100%; font-size: 2rem; background: var(--accent-pink); margin-top: 20px;">PAY NOW</button>
+                <button type="button" onclick="window.BrutalModal.confirm('FINALIZE_PAYMENT?', 'TRANSACTION WILL BE PROCESSED IMMEDIATELY.', processCheckout, 'PROCESS', 'HOLD')" class="brutal-button" style="width: 100%; font-size: 2rem; background: var(--accent-pink); margin-top: 20px;">PAY NOW</button>
             </form>
         </div>
         
