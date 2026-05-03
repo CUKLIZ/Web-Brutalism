@@ -40,7 +40,7 @@
                                 <input type="text" class="qty-input" value="1">
                                 <button class="qty-btn">+</button>
                             </div>
-                            <button style="width: 100%; border: var(--border-width) solid var(--brutal-black); background: black; color: white; padding: 5px; font-weight: 900; font-size: 0.6rem; margin-top: 10px; cursor: pointer;">REMOVE X</button>
+                            <button onclick="window.BrutalModal.confirm('REMOVE_ITEM?', 'PURGE THIS ASSET FROM YOUR CURRENT LOOT?', () => { console.log('Item removed'); }, 'PURGE', 'RETAIN')" style="width: 100%; border: var(--border-width) solid var(--brutal-black); background: black; color: white; padding: 5px; font-weight: 900; font-size: 0.6rem; margin-top: 10px; cursor: pointer;">REMOVE X</button>
                         </div>
                         <div style="position: absolute; right: 10px; bottom: 10px; font-size: 1.5rem; font-weight: 900; pointer-events: none; opacity: 0.1;">#<%= item.id %></div>
                     </div>

@@ -60,7 +60,7 @@
                         document.getElementById('redirect_msg').style.display = ['dana', 'ovo', 'gopay'].includes(method) ? 'block' : 'none';
                     });
                 </script>
-                <button type="button" class="brutal-button" style="width: 100%; font-size: 2rem; background: var(--accent-pink); margin-top: 20px;">PAY NOW</button>
+                <button type="button" onclick="window.BrutalModal.confirm('FINALIZE_PAYMENT?', 'TRANSACTION WILL BE PROCESSED IMMEDIATELY.', () => { window.BrutalModal.show({title: 'SUCCESS', message: 'TRANSACTION_COMPLETE_VAULT_UPDATED', tag: 'SYNC_DONE'}); }, 'PROCESS', 'HOLD')" class="brutal-button" style="width: 100%; font-size: 2rem; background: var(--accent-pink); margin-top: 20px;">PAY NOW</button>
             </form>
         </div>
         

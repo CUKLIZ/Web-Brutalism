@@ -172,7 +172,7 @@
                         <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
                             <button style="border: 2px solid black; background: var(--neon-green); color: black; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: default;">[IS_DEFAULT]</button>
                             <button style="border: 2px solid black; background: black; color: white; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">EDIT</button>
-                            <button style="border: 2px solid black; background: #FF0000; color: white; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">DELETE</button>
+                            <button onclick="window.BrutalModal.confirm('DELETE_ADDRESS?', 'THIS ACTION CANNOT BE UNDONE.', () => { console.log('Address deleted'); }, 'DELETE', 'CANCEL')" style="border: 2px solid black; background: #FF0000; color: white; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">DELETE</button>
                         </div>
                     </div>
                 </div>
@@ -187,7 +187,7 @@
                         <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
                             <button style="border: 2px solid black; background: white; color: black; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">SET_AS_DEFAULT</button>
                             <button style="border: 2px solid black; background: black; color: white; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">EDIT</button>
-                            <button style="border: 2px solid black; background: #FF0000; color: white; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">DELETE</button>
+                            <button onclick="window.BrutalModal.confirm('DELETE_ADDRESS?', 'THIS ACTION CANNOT BE UNDONE.', () => { console.log('Address deleted'); }, 'DELETE', 'CANCEL')" style="border: 2px solid black; background: #FF0000; color: white; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">DELETE</button>
                         </div>
                     </div>
                 </div>
@@ -237,7 +237,7 @@
         <section class="brutal-card" style="background: var(--brutal-black); color: white;">
             <h2 style="font-size: 2rem; border-bottom: 4px solid var(--gallery-white); padding-bottom: 10px; margin-bottom: 20px;">05_DANGER_ZONE</h2>
             <p style="margin-bottom: 20px; font-weight: 700; opacity: 0.8;">DISCONNECT FROM SYSTEM VAULT TEMPORARILY.</p>
-            <button class="brutal-button" style="background: #FF0000; color: white; width: 100%; border-color: white;">ABORT_SESSION_(LOGOUT)</button>
+            <button onclick="window.BrutalModal.confirm('EXIT_VAULT?', 'YOUR SESSION WILL BE TERMINATED.', () => { window.location.href='/login'; }, 'ABORT_SESSION', 'STAY_LINKED')" class="brutal-button" style="background: #FF0000; color: white; width: 100%; border-color: white;">ABORT_SESSION_(LOGOUT)</button>
         </section>
     </div>
 </div>
