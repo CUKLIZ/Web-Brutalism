@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\CheckoutController;
 
 Route::get('/', function () {
     $products = Product::with('images')->take(6)->get();
@@ -64,24 +65,22 @@ Route::get('/cart/summary', function () {
 })->middleware('auth');
 
 Route::middleware('auth')->group(function () {
-    // Cart routes yang udah ada
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
     Route::delete('/cart/remove/{item}', [CartController::class, 'remove'])->name('cart.remove');
     Route::patch('/cart/update/{item}', [CartController::class, 'update'])->name('cart.update');
 
-    // Profile routes (tambah ini)
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
 
-    // Address routes (tambah ini kalau mau pakai AddressController)
     Route::post('/profile/address', [AddressController::class, 'store'])->name('profile.address.store');
     Route::patch('/profile/address/{id}/default', [AddressController::class, 'setDefault'])->name('profile.address.default');
     Route::get('/profile/address/{id}/edit', [AddressController::class, 'edit'])->name('profile.address.edit');
     Route::delete('/profile/address/{id}', [AddressController::class, 'destroy'])->name('profile.address.destroy');
 
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
 });
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

@@ -14,8 +14,8 @@
 
                 {{-- FULL NAME --}}
                 <div style="margin-bottom: 20px;">
-                    <label class="brutal-font" style="display: block; margin-bottom: 10px;">FULL NAME</label>
-                    <input type="text" name="full_name" class="brutal-border"
+                    <label class="brutal-font" style="display: block; margin-bottom: 10px;">USERNAME</label>
+                    <input type="text" name="full_name" class="brutal-border" readonly
                         style="width: 100%; padding: 15px; font-size: 1.2rem; font-family: inherit; font-weight: 900; outline: none;"
                         placeholder="JOHN_DOE_EXAMPLE"
                         value="{{ old('full_name', Auth::user()->username) }}">
@@ -96,7 +96,7 @@
                 <div class="flex-between" style="margin-bottom: 10px;">
                     <span style="font-weight: 700;">{{ strtoupper($item->product->name) }}
                         @if($item->size)
-                            <span style="font-size: 0.75rem; opacity: 0.6;">[{{ $item->size }}]</span>
+                            <span style="font-size: 0.75rem; opacity: 0.6;">[{{ $item->size->name }}]</span>
                         @endif
                         <span style="font-size: 0.75rem; opacity: 0.6;">x{{ $item->quantity }}</span>
                     </span>

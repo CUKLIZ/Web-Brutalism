@@ -194,7 +194,7 @@
                         </div>
                     </div>
 
-                    <a href="/checkout" class="brutal-button"
+                    <a href="{{ route('checkout') }}" class="brutal-button"
                         style="width: 100%; text-align: center; background: black; color: var(--neon-green); font-size: 2.2rem; padding: 15px 0; margin-bottom: 20px; font-style: italic; display: block; text-decoration: none; border: 4px solid black; font-weight: 900; transition: 0.1s;">
                         CHECKOUT_NOW
                     </a>

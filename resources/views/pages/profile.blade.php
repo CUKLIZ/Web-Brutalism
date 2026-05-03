@@ -233,11 +233,20 @@
                                     </form>
                                 @endif
                                 <a href="{{ route('profile.address.edit', $address->id) }}" style="border: 2px solid black; background: black; color: white; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer; text-decoration: none;">EDIT</a>
-                                <form action="{{ route('profile.address.destroy', $address->id) }}" method="POST" onsubmit="return confirm('DELETE THIS ADDRESS?')">
+                                <form id="delete-address-{{ $address->id }}" 
+                                        action="{{ route('profile.address.destroy', $address->id) }}" 
+                                        method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" style="border: 2px solid black; background: #FF0000; color: white; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">DELETE</button>
                                 </form>
+
+                                <button onclick="window.BrutalModal.confirm(
+                                    'DELETE_ADDRESS?', 
+                                    'THIS ACTION CANNOT BE UNDONE.', 
+                                    () => document.getElementById('delete-address-{{ $address->id }}').submit(), 
+                                    'DELETE', 
+                                    'CANCEL'
+                                )" style="border: 2px solid black; background: #FF0000; color: white; padding: 5px 12px; font-weight: 900; font-size: 0.7rem; cursor: pointer;">DELETE</button>
                             </div>
                         </div>
                     </div>
