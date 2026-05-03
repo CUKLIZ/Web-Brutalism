@@ -80,6 +80,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/address/{id}/default', [AddressController::class, 'setDefault'])->name('profile.address.default');
     Route::get('/profile/address/{id}/edit', [AddressController::class, 'edit'])->name('profile.address.edit');
     Route::delete('/profile/address/{id}', [AddressController::class, 'destroy'])->name('profile.address.destroy');
+
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 });
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

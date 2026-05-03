@@ -8,9 +8,7 @@ use App\Models\Address;
 
 class AddressController extends Controller
 {
-    /**
-     * Simpan alamat baru.
-     */
+    // Simpan alamat baru
     public function store(Request $request)
     {
         $request->validate([
@@ -38,9 +36,7 @@ class AddressController extends Controller
         return redirect()->route('profile')->with('success', 'ADDRESS_ADDED_SUCCESSFULLY');
     }
 
-    /**
-     * Tampilkan form edit alamat.
-     */
+    // Tampilkan form edit alamat.
     public function edit($id)
     {
         $address = Address::where('user_id', Auth::id())->findOrFail($id);
@@ -48,9 +44,7 @@ class AddressController extends Controller
         return view('pages.address-edit', compact('address'));
     }
 
-    /**
-     * Update alamat yang sudah ada.
-     */
+    // Update alamat yang sudah ada.
     public function update(Request $request, $id)
     {
         $address = Address::where('user_id', Auth::id())->findOrFail($id);
@@ -74,9 +68,7 @@ class AddressController extends Controller
         return redirect()->route('profile')->with('success', 'ADDRESS_UPDATED_SUCCESSFULLY');
     }
 
-    /**
-     * Set alamat sebagai default.
-     */
+    // Set alamat sebagai default.
     public function setDefault($id)
     {
         $user = Auth::user();
@@ -90,9 +82,7 @@ class AddressController extends Controller
         return redirect()->route('profile')->with('success', 'DEFAULT_ADDRESS_UPDATED');
     }
 
-    /**
-     * Hapus alamat.
-     */
+    // Hapus alamat.
     public function destroy($id)
     {
         $address = Address::where('user_id', Auth::id())->findOrFail($id);

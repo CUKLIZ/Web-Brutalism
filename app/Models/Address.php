@@ -23,9 +23,6 @@ class Address extends Model
         'is_default' => 'boolean',
     ];
 
-    /**
-     * Relasi ke User.
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
