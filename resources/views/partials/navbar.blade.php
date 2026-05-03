@@ -1,9 +1,9 @@
 <div class="marquee-banner">
     <div class="marquee-content">
-        <span class="marquee-item">RAW_STREETWEAR_2024 // FREE SHIPPING FOR THE CULT // NO_POLISH_REQUIRED //</span>
-        <span class="marquee-item">RAW_STREETWEAR_2024 // FREE SHIPPING FOR THE CULT // NO_POLISH_REQUIRED //</span>
-        <span class="marquee-item">RAW_STREETWEAR_2024 // FREE SHIPPING FOR THE CULT // NO_POLISH_REQUIRED //</span>
-        <span class="marquee-item">RAW_STREETWEAR_2024 // FREE SHIPPING FOR THE CULT // NO_POLISH_REQUIRED //</span>
+        <span class="marquee-item">RAW_STREETWEAR_2026 // FREE SHIPPING FOR THE CULT // NO_POLISH_REQUIRED //</span>
+        <span class="marquee-item">RAW_STREETWEAR_2026 // FREE SHIPPING FOR THE CULT // NO_POLISH_REQUIRED //</span>
+        <span class="marquee-item">RAW_STREETWEAR_2026 // FREE SHIPPING FOR THE CULT // NO_POLISH_REQUIRED //</span>
+        <span class="marquee-item">RAW_STREETWEAR_2026 // FREE SHIPPING FOR THE CULT // NO_POLISH_REQUIRED //</span>
     </div>
 </div>
 <nav class="brutal-nav">

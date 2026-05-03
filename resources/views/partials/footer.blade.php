@@ -2,7 +2,7 @@
     <div class="container text-center">
         <h2 class="brutal-font" style="font-size: 5rem; margin-bottom: 20px; -webkit-text-stroke: 2px black; color: white;">VOID_SYSTEM</h2>
         <div style="background: black; color: white; display: inline-block; padding: 10px 20px; font-weight: 900; margin-bottom: 30px; transform: rotate(1deg);">
-            © 2024 NO_REFUNDS // NO_MERCY
+            © 2026 NO_REFUNDS // NO_MERCY
         </div>
         <div class="flex" style="justify-content: center; gap: 20px; margin-top: 20px;">
             <a href="#" class="brutal-button" style="padding: 10px 30px; background: var(--accent-yellow);">INSTA</a>
