@@ -9,13 +9,14 @@
 
         <div class="brutal-card">
             <h2 style="margin-bottom: 30px;">SECURE_TRANSACTION</h2>
-            <form action="{{ route('checkout.process') }}" method="POST">
+            
+            <form id="checkout-form" action="{{ route('checkout.process') }}" method="POST">
                 @csrf
 
                 {{-- FULL NAME --}}
                 <div style="margin-bottom: 20px;">
                     <label class="brutal-font" style="display: block; margin-bottom: 10px;">USERNAME</label>
-                    <input type="text" name="full_name" class="brutal-border" readonly
+                    <input type="text" name="full_name" id="full_name" class="brutal-border" readonly
                         style="width: 100%; padding: 15px; font-size: 1.2rem; font-family: inherit; font-weight: 900; outline: none;"
                         placeholder="JOHN_DOE_EXAMPLE"
                         value="{{ old('full_name', Auth::user()->username) }}">
@@ -27,7 +28,7 @@
                 {{-- SELECT ADDRESS --}}
                 <div style="margin-bottom: 20px;">
                     <label class="brutal-font" style="display: block; margin-bottom: 10px;">SELECT ADDRESS</label>
-                    <select name="address_id" class="brutal-border"
+                    <select name="address_id" id="address_id" class="brutal-border"
                         style="width: 100%; padding: 15px; font-size: 1rem; font-family: inherit; font-weight: 900; background: white; appearance: none; cursor: pointer; outline: none;">
                         <option value="">-- SELECT_LOCATION --</option>
                         @forelse ($addresses as $address)
@@ -84,7 +85,7 @@
                     <p style="font-weight: 900; font-size: 0.9rem; color: var(--brutal-black);">"You will be redirected after payment"</p>
                 </div>
 
-                <button type="submit" class="brutal-button" style="width: 100%; font-size: 2rem; background: var(--accent-pink); margin-top: 20px;">PAY NOW</button>
+                <button type="button" onclick="validateCheckout()" class="brutal-button" style="width: 100%; font-size: 2rem; background: var(--accent-pink); margin-top: 20px;">PAY NOW</button>
             </form>
         </div>
 
@@ -130,12 +131,40 @@
 </section>
 
 <script>
+    // Toggle visibility based on payment method
     document.getElementById('payment_method').addEventListener('change', function () {
         const method = this.value;
         document.getElementById('bank_selection').style.display   = method === 'bank_transfer' ? 'block' : 'none';
         document.getElementById('qris_placeholder').style.display = method === 'qris' ? 'block' : 'none';
         document.getElementById('redirect_msg').style.display     = ['dana', 'ovo', 'gopay'].includes(method) ? 'block' : 'none';
     });
+
+    function validateCheckout() {
+        const address = document.getElementById('address_id').value;
+        const payment = document.getElementById('payment_method').value;
+        const form = document.getElementById('checkout-form');
+
+        // 1. Jika form belum lengkap, tampilkan modal peringatan (bukan modal konfirmasi)
+        if (!address || !payment) {
+            window.BrutalModal.confirm(
+                'MISSING_DATA!', 
+                'PLEASE SELECT YOUR ADDRESS AND PAYMENT METHOD BEFORE PROCEEDING.', 
+                () => {}, // Tidak melakukan apa-apa saat OK diklik
+                'UNDERSTOOD', 
+                'CLOSE'
+            );
+            return;
+        }
+
+        // 2. Jika sudah lengkap, baru tampilkan modal konfirmasi untuk kirim form
+        window.BrutalModal.confirm(
+            'CONFIRM_PAYMENT?', 
+            'PROCEED TO TRANSACTION WITH THE CURRENT MANIFEST?', 
+            () => form.submit(), 
+            'YES_PAY', 
+            'CANCEL'
+        );
+    }
 </script>
 
 @endsection
