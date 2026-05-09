@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model
 {
-    protected $fillable = ['name', 'price', 'category'];
+    protected $fillable = ['name', 'price', 'category', 'description', 'content', 'weight', 'fit', 'colour'];
 
     public function images(): HasMany
     {
@@ -20,5 +20,10 @@ class Product extends Model
         return $this->belongsToMany(Size::class, 'product_size_stock')
                     ->withPivot('stock')
                     ->withTimestamps();
+    }
+
+    public function getTotalStockAttribute()
+    {
+        return $this->sizes->sum('pivot.stock');
     }
 }

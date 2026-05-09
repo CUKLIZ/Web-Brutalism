@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 
 Route::get('/products', function () {
-    $products = Product::all();
+    $products = Product::with('images')->get();
     $categories = ["ALL", ...Product::distinct()->pluck('category')];
     $activeCategory = request('category', 'ALL');
     $searchQuery = request('q', '');
@@ -91,6 +91,6 @@ Route::prefix('admin')->group(function () {
     Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
     Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
-    Route::patch('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::put('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
     Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
 });

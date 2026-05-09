@@ -188,7 +188,7 @@
         <a href="/admin/products" style="font-size: 0.8rem; font-weight: 900; color: #000;">FULL_DATABASE -></a>
     </div>
 
-    <div class="grid" id="admin-product-list" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;">
+    <div class="grid product-grid" id="admin-product-list" style="gap: 30px;">
         @forelse ($products as $product)
             <div class="admin-product-wrapper"
                  data-search="{{ $product->id }} {{ strtolower($product->name) }} {{ strtolower($product->category) }}">

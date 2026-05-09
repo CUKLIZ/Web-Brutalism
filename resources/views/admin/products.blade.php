@@ -14,7 +14,7 @@
     <a href="/admin/products/create" class="brutal-button" style="background: var(--neon-green); padding: 8px 25px; text-decoration: none; color: #000; font-size: 0.9rem;">+ ADD_NEW_ITEM</a>
 </div>
 
-<div class="grid" id="admin-product-list" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;">
+<div class="grid product-grid" id="admin-product-list" style="gap: 30px;">
     @forelse ($products as $product)
         <div class="admin-product-wrapper"
              data-search="{{ $product->id }} {{ strtolower($product->name) }} {{ strtolower($product->category) }}">

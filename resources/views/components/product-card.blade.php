@@ -3,6 +3,7 @@
 @php
     $firstImage = $product->images->first()->image_path ?? null;
     $imageSrc = $firstImage ? asset('storage/' . $firstImage) : 'https://placehold.co/400x250/000/fff?text=NO_IMAGE';
+    $totalStock = $product->sizes->sum('pivot.stock');
 @endphp
 
 <div class="brutal-card product-card {{ $className }}" 
@@ -20,11 +21,9 @@
         <div style="text-align: right;">
             <span style="font-size: 0.7rem; font-weight: 900; opacity: 0.5; display: block;">[{{ $product->category }}]</span>
             @if($isAdmin)
-                @if(isset($product->stock_summary))
-                    <span style="font-size: 0.6rem; font-weight: 900; display: block; margin-top: 5px; color: var(--neon-green); background: #000; padding: 2px 5px;">{{ $product->stock_summary }}</span>
-                @else
-                    <span style="font-size: 0.6rem; font-weight: 900; display: block; margin-top: 5px; color: var(--neon-green); background: #000; padding: 2px 5px;">STOCK: 24_UNIT</span>
-                @endif
+                <span style="font-size: 0.6rem; font-weight: 900; display: block; margin-top: 5px; color: var(--neon-green); background: #000; padding: 2px 5px;">
+                    STOCK: {{ $totalStock }}_UNIT
+                </span>
             @else
                 <span class="badge" style="background: var(--neon-green); color: black;">NEW</span>
             @endif

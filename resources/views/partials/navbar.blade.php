@@ -30,20 +30,23 @@
 
                 @if(Auth::user()->role === 'admin')
                     <div class="nav-separator"></div>
-                    <a href="/admin" class="brutal-font nav-link" style="
-                        background: var(--neon-green);
-                        color: black;
-                        border: 2px solid black;
-                        box-shadow: 3px 3px 0px black;
-                        padding: 4px 12px;
+                    <a href="/admin" class="brutal-font" style="
+                        background: black;
+                        color: var(--neon-green);
+                        border: 3px solid var(--neon-green);
+                        box-shadow: 4px 4px 0px var(--neon-green);
+                        padding: 6px 14px;
                         font-size: 0.75rem;
-                        letter-spacing: 1px;
-                        transition: all 0.1s ease;
+                        letter-spacing: 2px;
                         text-decoration: none;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 6px;
+                        transition: all 0.1s ease;
                     "
-                    onmouseover="this.style.boxShadow='1px 1px 0px black'; this.style.transform='translate(2px,2px)'"
-                    onmouseout="this.style.boxShadow='3px 3px 0px black'; this.style.transform='translate(0,0)'"
-                    >⚡ ADMIN_PANEL</a>
+                    onmouseover="this.style.boxShadow='1px 1px 0px var(--neon-green)'; this.style.transform='translate(3px,3px)'"
+                    onmouseout="this.style.boxShadow='4px 4px 0px var(--neon-green)'; this.style.transform='translate(0,0)'"
+                    ><span style="font-size: 0.9rem;">⚡</span>[GO_TO_ADMIN]</a>
                 @endif
             @else
                 <a href="/login" class="brutal-font nav-link {{ request()->is('login') ? 'active' : '' }}">LOGIN</a>

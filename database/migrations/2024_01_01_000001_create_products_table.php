@@ -12,6 +12,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->decimal('price', 15, 0); // IDR usually doesn't have decimals
+            $table->text('description')->nullable();
+            $table->string('content')->nullable();
+            $table->string('weight')->nullable();
+            $table->string('fit')->nullable();
+            $table->string('colour')->nullable();
             $table->string('category');
             $table->timestamps();
         });
