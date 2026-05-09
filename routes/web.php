@@ -70,27 +70,31 @@ Route::middleware('auth')->group(function () {
     // Order
     Route::get('/order/{order_code}/success', [CheckoutController::class, 'success'])->name('order.success');
     Route::patch('/order/{order_code}/simulate', [CheckoutController::class, 'simulate'])->name('order.simulate');
+    Route::patch('/order/{order_code}/expire', [CheckoutController::class, 'expire'])->name('order.expire');
+    Route::get('/order/{order_code}/detail', [CheckoutController::class, 'showDetail'])->name('order.detail');
+    Route::patch('/order/{order_code}/cancel', [CheckoutController::class, 'cancel'])->name('order.cancel');
 });
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::patch('/order/{order_code}/expire', [CheckoutController::class, 'expire'])->name('order.expire');
-Route::get('/order/{order_code}/detail', [CheckoutController::class, 'showDetail'])->name('order.detail');
-Route::patch('/order/{order_code}/cancel', [CheckoutController::class, 'cancel'])->name('order.cancel');
-
 // Admin Routes
-Route::get('/admin', [DashboardController::class, 'index']);
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin', [DashboardController::class, 'index']);
 
-Route::prefix('admin')->group(function () {
-    Route::get('/products', [ProductController::class, 'index'])->name('admin.products.index');
-    Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create');
-    Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
-    Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
-    Route::put('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
-    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
+    Route::prefix('admin')->group(function () {
+        Route::get('/products', [ProductController::class, 'index'])->name('admin.products.index');
+        Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create');
+        Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
+        Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
+        Route::put('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
+        Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
+
+        Route::get('/orders', [DashboardController::class, 'orders'])->name('admin.orders');
+        Route::patch('/orders/{id}/complete', [DashboardController::class, 'complete'])->name('admin.orders.complete');
+        Route::get('/orders/{id}', [DashboardController::class, 'showOrder'])->name('admin.orders.show');
+    });
 });

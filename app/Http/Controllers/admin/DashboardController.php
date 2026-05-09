@@ -39,4 +39,24 @@ class DashboardController extends Controller
             'revenueChart'
         ));
     }
+
+    public function orders(Request $request)
+    {
+        $query = Order::with(['user', 'items'])->latest();
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Search by order_code atau username
+        if ($request->filled('q')) {
+            $query->where('order_code', 'like', '%' . $request->q . '%')
+                ->orWhereHas('user', fn($q) => $q->where('username', 'like', '%' . $request->q . '%'));
+        }
+
+        $orders = $query->paginate(20);
+
+        return view('admin.orders', compact('orders'));
+    }
 }
