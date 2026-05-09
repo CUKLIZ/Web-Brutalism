@@ -5,7 +5,7 @@
 <style>
     .loot-table tbody tr {
         transition: background-color 0.1s ease;
-        cursor: default;
+        cursor: pointer;
     }
     .loot-table tbody tr:hover {
         background-color: var(--accent-yellow) !important;
@@ -105,7 +105,7 @@
             <section class="brutal-card" style="padding: 0; overflow: hidden;">
                 <div style="background: var(--brutal-black); color: white; padding: 20px;">
                     <h2 style="font-size: 2rem;">03_TRANSACTION_LOG</h2>
-                    <p style="font-size: 0.8rem; font-weight: 900; margin-top: 5px; opacity: 0.7;">RECENT DATA ENTRIES IN VAULT HISTORY</p>
+                    <p style="font-size: 0.8rem; font-weight: 900; margin-top: 5px; opacity: 0.7;">CLICK ROW TO VIEW DETAIL — RECENT DATA ENTRIES IN VAULT HISTORY</p>
                 </div>
                 <div style="padding: 20px; overflow-x: auto;">
                     <table class="loot-table" style="margin: 0; border: none; width: 100%;">
@@ -125,13 +125,18 @@
                                         'completed' => 'var(--neon-green)',
                                         'paid'      => 'var(--accent-yellow)',
                                         'pending'   => 'var(--accent-pink)',
+                                        'cancelled' => '#FF0000',
                                     ];
                                     $statusColor = $statusColors[strtolower($order->status)] ?? '#ccc';
-                                    $statusTextColor = strtolower($order->status) === 'pending' ? 'white' : 'black';
+                                    // $statusTextColor = strtolower($order->status) === 'pending' ? 'white' : 'black';
+                                    $statusTextColor = in_array(strtolower($order->status), ['pending', 'cancelled']) ? 'white' : 'black';
+                                    $rowUrl = $order->status === 'pending'
+                                        ? route('order.success', $order->order_code)
+                                        : route('order.detail', $order->order_code);
                                 @endphp
-                                <tr>
+                                <tr onclick="window.location='{{ $rowUrl }}'" title="VIEW_DETAIL">
                                     <td style="border-left: none; {{ $isLast ? 'border-bottom: none;' : '' }} font-family: monospace; font-weight: 900;">
-                                        #{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}
+                                        {{ $order->order_code }}
                                     </td>
                                     <td class="brutal-font" style="{{ $isLast ? 'border-bottom: none;' : '' }}">
                                         Rp {{ number_format($order->total_price, 0, ',', '.') }}

@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADMIN_CONTROL_PANEL // VOID_STREET</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/brutal-modal.js'])
     <style>
         .admin-sidebar {
             width: 260px;
@@ -93,12 +94,12 @@
 
             <nav>
                 <span class="sidebar-label">PRIMARY_MODULES</span>
-                <a href="/admin" class="admin-nav-link <%= path === '/admin' ? 'active' : '' %>">DASHBOARD</a>
-                <a href="/admin/products" class="admin-nav-link <%= path === '/admin/products' ? 'active' : '' %>">PRODUCTS_DB</a>
-                
+                <a href="/admin" class="admin-nav-link {{ request()->is('admin') ? 'active' : '' }}">DASHBOARD</a>
+                <a href="/admin/products" class="admin-nav-link {{ request()->is('admin/products') ? 'active' : '' }}">PRODUCTS_DB</a>
+
                 <span class="sidebar-label" style="margin-top: 30px;">OPERATIONS</span>
-                <a href="/admin/add-product" class="admin-nav-link">ADD_NEW_ITEM</a>
-                
+                <a href="/admin/products/create" class="admin-nav-link {{ request()->is('admin/products/create') ? 'active' : '' }}">ADD_NEW_ITEM</a>
+
                 <div style="margin-top: 80px; border-top: 3px solid #333; padding-top: 30px;">
                     <a href="/" class="admin-nav-link" style="border-color: var(--accent-pink); color: var(--accent-pink);">EXIT_TO_VAULT</a>
                 </div>
@@ -113,8 +114,11 @@
             </div>
         </div>
         <main class="admin-main">
-            <%- body %>
+            @yield('content')
         </main>
     </div>
+
+    @include('components.modal')
+
 </body>
 </html>

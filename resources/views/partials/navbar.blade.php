@@ -22,26 +22,33 @@
 
             @auth
                 <a href="/cart" class="brutal-font nav-link {{ request()->is('cart') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 8px;">
-                    YOUR LOOT 
+                    YOUR LOOT
                     <span class="cart-badge">2</span>
                 </a>
                 <div class="nav-separator"></div>
-                {{-- <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
-                    @csrf
-                    <button type="submit" class="brutal-font nav-link" style="background: none; border: none; cursor: pointer; font-size: inherit; padding: 0;">
-                        LOGOUT_[{{ Auth::user()->username }}]
-                    </button>
-                </form> --}}
-                <a href="/profile" class="brutal-font nav-link <%= path === '/profile' ? 'active' : '' %>">PROFILE</a>
-                {{-- <div class="nav-separator"></div> --}}
+                <a href="/profile" class="brutal-font nav-link {{ request()->is('profile') ? 'active' : '' }}">PROFILE</a>
+
+                @if(Auth::user()->role === 'admin')
+                    <div class="nav-separator"></div>
+                    <a href="/admin" class="brutal-font nav-link" style="
+                        background: var(--neon-green);
+                        color: black;
+                        border: 2px solid black;
+                        box-shadow: 3px 3px 0px black;
+                        padding: 4px 12px;
+                        font-size: 0.75rem;
+                        letter-spacing: 1px;
+                        transition: all 0.1s ease;
+                        text-decoration: none;
+                    "
+                    onmouseover="this.style.boxShadow='1px 1px 0px black'; this.style.transform='translate(2px,2px)'"
+                    onmouseout="this.style.boxShadow='3px 3px 0px black'; this.style.transform='translate(0,0)'"
+                    >⚡ ADMIN_PANEL</a>
+                @endif
             @else
                 <a href="/login" class="brutal-font nav-link {{ request()->is('login') ? 'active' : '' }}">LOGIN</a>
                 <div class="nav-separator"></div>
-                {{-- <a href="/register" class="brutal-font nav-link {{ request()->is('register') ? 'active' : '' }}">REGISTER</a> --}}
             @endauth
-
-            <div class="nav-separator"></div>
-            <a href="/admin" class="brutal-font nav-link" style="background: black; color: white;">[GO_TO_ADMIN]</a>
         </div>
     </div>
 </nav>
