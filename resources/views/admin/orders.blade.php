@@ -103,14 +103,21 @@
                         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                             {{-- Mark as Completed --}}
                             @if ($order->status === 'paid')
-                                <form action="{{ route('admin.orders.complete', $order->id) }}" method="POST">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit"
-                                            style="background: var(--neon-green); border: 2px solid black; padding: 4px 10px; font-weight: 900; font-size: 0.6rem; cursor: pointer; white-space: nowrap;">
+                                <form id="complete-form-{{ $order->id }}" action="{{ route('admin.orders.complete', $order->id) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                    </form>
+                                    <button type="button"
+                                        onclick="window.BrutalModal.confirm(
+                                            'MARK_AS_COMPLETE?',
+                                            'ORDER {{ $order->order_code }} WILL BE MARKED AS COMPLETED. THIS ACTION CANNOT BE UNDONE.',
+                                            () => document.getElementById('complete-form-{{ $order->id }}').submit(),
+                                            'CONFIRM_COMPLETE',
+                                            'CANCEL'
+                                        )"
+                                        style="background: var(--neon-green); border: 2px solid black; padding: 4px 10px; font-weight: 900; font-size: 0.6rem; cursor: pointer; white-space: nowrap;">
                                         MARK_COMPLETE
                                     </button>
-                                </form>
                             @endif
 
                             {{-- View Detail --}}

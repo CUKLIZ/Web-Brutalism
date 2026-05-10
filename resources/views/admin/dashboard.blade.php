@@ -162,7 +162,7 @@
                     @endphp
                     <tr style="border-bottom: 2px solid #000; font-size: 0.8rem; {{ $loop->even ? 'background: #f5f5f5;' : '' }}">
                         <td style="padding: 12px 15px; font-size: 0.75rem;">{{ $order->order_code }}</td>
-                        <td style="padding: 12px 15px;">{{ strtoupper($order->user->name ?? 'N/A') }}</td>
+                        <td style="padding: 12px 15px;">{{ strtoupper($order->user->username ?? 'N/A') }}</td>
                         <td style="padding: 12px 15px;">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
                         <td style="padding: 12px 15px;">
                             <span style="background: {{ $statusColor }}; {{ $statusTextColor }} padding: 2px 8px; font-size: 0.65rem; border: 2px solid #000;">

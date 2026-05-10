@@ -59,4 +59,15 @@ class DashboardController extends Controller
 
         return view('admin.orders', compact('orders'));
     }
+
+    public function complete($id) {
+        $order = Order::findOrFail($id);
+        $order->update(['status' => 'completed']);
+        return back()->with('success', 'ORDER_MARKED_COMPLETED');
+    }
+
+    public function showOrder($id) {
+        $order = Order::with(['user', 'items.product', 'items.size', 'address'])->findOrFail($id);
+        return view('admin.orders-detail', compact('order'));
+    }
 }

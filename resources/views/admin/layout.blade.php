@@ -96,6 +96,7 @@
                 <span class="sidebar-label">PRIMARY_MODULES</span>
                 <a href="/admin" class="admin-nav-link {{ request()->is('admin') ? 'active' : '' }}">DASHBOARD</a>
                 <a href="/admin/products" class="admin-nav-link {{ request()->is('admin/products') ? 'active' : '' }}">PRODUCTS_DB</a>
+                <a href="/admin/orders" class="admin-nav-link {{ request()->is('admin/orders') ? 'active' : '' }}">ORDERS</a>
 
                 <span class="sidebar-label" style="margin-top: 30px;">OPERATIONS</span>
                 <a href="/admin/products/create" class="admin-nav-link {{ request()->is('admin/products/create') ? 'active' : '' }}">ADD_NEW_ITEM</a>
