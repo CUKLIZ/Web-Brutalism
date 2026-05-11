@@ -15,7 +15,7 @@
     
     <div class="flex-between" style="padding: 15px; background: #fff;">
         <div>
-            <h3 style="font-size: 1.5rem; margin-bottom: 5px; font-weight: 900;">{{ $product->name }}</h3>
+            <h3 style="font-size: 1.5rem; margin-bottom: 5px; font-weight: 900; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2;">{{ $product->name }}</h3>
             <p class="brutal-font" style="font-size: 1.2rem; font-weight: 900; color: #000;">{{ formatPrice($product->price) }}</p>
         </div>
         <div style="text-align: right;">
@@ -46,13 +46,13 @@
                     data-category="{{ $product->category }}"
                     style="flex: 1; padding: 0.6rem; background: var(--accent-yellow); font-size: 0.8rem; font-weight: 900;">QUICK</button>
             <a href="/product/{{ $product->id }}" class="brutal-button" style="flex: 1; text-align: center; padding: 0.6rem; background: #fff; font-size: 0.8rem; text-decoration: none; color: black; font-weight: 900;">FULL</a>
-            <button class="brutal-button buy-btn" 
+            {{-- <button class="brutal-button buy-btn" 
                     data-id="{{ $product->id }}"
                     data-name="{{ $product->name }}"
                     data-price="{{ $product->price }}"
                     data-image="{{ $imageSrc }}"
                     data-category="{{ $product->category }}"
-                    style="flex: 1; padding: 0.6rem; background: var(--accent-pink); font-size: 0.8rem; color: white; font-weight: 900;">LOOT</button>
+                    style="flex: 1; padding: 0.6rem; background: var(--accent-pink); font-size: 0.8rem; color: white; font-weight: 900;">LOOT</button> --}}
         @endif
     </div>
 </div>

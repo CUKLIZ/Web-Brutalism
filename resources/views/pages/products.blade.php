@@ -67,7 +67,7 @@
                 </div>
                 <div>
                     <span id="modal-category" class="badge" style="background: var(--neon-green); color: black;">CATEGORY</span>
-                    <h2 id="modal-name" style="font-size: 3rem; margin: 15px 0; line-height: 1;">PRODUCT_NAME</h2>
+                    <h2 id="modal-name" style="font-size: 2rem; margin: 15px 0; line-height: 1.1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">PRODUCT_NAME</h2>
                     <p id="modal-price" class="brutal-font" style="font-size: 2.5rem; margin-bottom: 20px;">Rp 0</p>
                     <div style="border: 2px solid black; padding: 15px; background: #f0f0f0; margin-bottom: 20px;">
                         <p class="brutal-font" style="font-size: 0.8rem; line-height: 1.5;">
