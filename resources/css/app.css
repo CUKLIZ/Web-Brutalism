@@ -231,7 +231,7 @@ nav.brutal-nav {
     display: grid;
     grid-template-columns: 180px 1fr 120px 100px;
     gap: 20px;
-    background: white;  `
+    background: white;
     border: var(--border-width) solid var(--brutal-black);
     padding: 0;
     margin-bottom: 20px;
