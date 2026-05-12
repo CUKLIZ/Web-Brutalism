@@ -1,0 +1,7 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="32" height="32" fill="black"/>
+    <!-- Bold, thick geometric V -->
+    <path d="M4 4H11L16 16L21 4H28L19 28H13L4 4Z" fill="white"/>
+    <!-- Optional Neon Green Accent - A sharp brutalist line at the bottom -->
+    <rect x="13" y="24" width="6" height="2" fill="#39FF14"/>
+</svg>
