@@ -48,7 +48,7 @@
     </div>
     
     <div class="grid product-grid">
-        @foreach($products->take(3) as $product)
+        @foreach($products as $product)
             <x-product-card :product="$product" />
         @endforeach
     </div>

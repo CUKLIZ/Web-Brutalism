@@ -26,7 +26,35 @@
                     <span class="cart-badge">2</span>
                 </a>
                 <div class="nav-separator"></div>
-                <a href="/profile" class="brutal-font nav-link {{ request()->is('profile') ? 'active' : '' }}">PROFILE</a>
+
+                {{-- PROFILE CARD --}}
+                <a href="/profile" style="display: flex; align-items: center; gap: 0; border: 3px solid #000; box-shadow: 3px 3px 0px #000; text-decoration: none; background: #fff; transition: all 0.1s ease;"
+                   onmouseover="this.style.boxShadow='1px 1px 0px #000'; this.style.transform='translate(2px,2px)'"
+                   onmouseout="this.style.boxShadow='3px 3px 0px #000'; this.style.transform='translate(0,0)'">
+
+                    {{-- Avatar --}}
+                    <div style="width: 38px; height: 38px; overflow: hidden; border-right: 3px solid #000; flex-shrink: 0;">
+                        @if(Auth::user()->avatar)
+                            <img src="{{ asset('storage/' . Auth::user()->avatar) }}"
+                                 style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                        @else
+                            <div style="width: 100%; height: 100%; background: var(--neon-green); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; color: #000;">
+                                {{ strtoupper(substr(Auth::user()->username, 0, 1)) }}
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Info --}}
+                    <div style="padding: 0 10px; display: flex; flex-direction: column; gap: 1px;">
+                        <span style="font-weight: 900; font-size: 11px; color: #000; letter-spacing: 1px; line-height: 1;">{{ strtoupper(Auth::user()->username) }}</span>
+                        <span style="font-size: 9px; font-weight: 900; color: #888; letter-spacing: 0.5px;">[{{ strtoupper(Auth::user()->role) }}]</span>
+                    </div>
+
+                    {{-- Arrow --}}
+                    <div style="padding: 0 8px; border-left: 3px solid #000; height: 38px; display: flex; align-items: center;">
+                        <span style="font-size: 10px; font-weight: 900; color: #000;">▼</span>
+                    </div>
+                </a>
 
                 @if(Auth::user()->role === 'admin')
                     <div class="nav-separator"></div>

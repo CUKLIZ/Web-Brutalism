@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOOT VAULT | NEO-BRUTALIST E-COMMERCE</title>
+    <title>VOID_STREET // RAW FUTURE WEAR</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/brutal-modal.js'])
 </head>
