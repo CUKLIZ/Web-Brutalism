@@ -93,6 +93,18 @@ async function startServer() {
     res.render("admin/products", { path: '/admin/products', products: adminProducts });
   });
 
+  app.get("/admin/users", (req, res) => {
+    const adminUsers = [
+      { id: 1, username: "VOID_KEEPER", email: "keeper@void.st", role: "ADMIN", status: "ACTIVE", joined: "2024-01-12", orders: 42, lastActive: "2MIN AGO" },
+      { id: 2, username: "STREET_GHOST", email: "ghost@neon.city", role: "USER", status: "ACTIVE", joined: "2024-03-05", orders: 12, lastActive: "5H AGO" },
+      { id: 3, username: "RAW_ARCHIVE", email: "raw@vintage.io", role: "USER", status: "BANNED", joined: "2023-11-20", orders: 2, lastActive: "128D AGO" },
+      { id: 4, username: "CYBER_NOMAD", email: "nomad@mesh.net", role: "VERIFIED", status: "ACTIVE", joined: "2024-04-01", orders: 25, lastActive: "NOW" },
+      { id: 5, username: "NULL_POINTER", email: "null@void.st", role: "USER", status: "VERIFIED", joined: "2024-02-14", orders: 8, lastActive: "1D AGO" },
+      { id: 6, username: "DATA_DRIP", email: "drip@loot.vault", role: "USER", status: "ACTIVE", joined: "2024-05-10", orders: 0, lastActive: "3M AGO" },
+    ];
+    res.render("admin/users", { path: '/admin/users', users: adminUsers });
+  });
+
   app.get("/admin/add-product", (req, res) => {
     res.render("admin/add_product", { path: '/admin/products' });
   });

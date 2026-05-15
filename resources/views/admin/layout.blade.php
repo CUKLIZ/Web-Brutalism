@@ -95,6 +95,7 @@
                 <span class="sidebar-label">PRIMARY_MODULES</span>
                 <a href="/admin" class="admin-nav-link <%= path === '/admin' ? 'active' : '' %>">DASHBOARD</a>
                 <a href="/admin/products" class="admin-nav-link <%= path === '/admin/products' ? 'active' : '' %>">PRODUCTS_DB</a>
+                <a href="/admin/users" class="admin-nav-link <%= path === '/admin/users' ? 'active' : '' %>">USER_DIRECTORY</a>
                 
                 <span class="sidebar-label" style="margin-top: 30px;">OPERATIONS</span>
                 <a href="/admin/add-product" class="admin-nav-link">ADD_NEW_ITEM</a>
