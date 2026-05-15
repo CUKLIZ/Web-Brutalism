@@ -19,10 +19,23 @@
 
     @include('components.modal')
 
+    @auth
+        <script>
+            async function updateCartBadge() {
+                const res = await fetch('/cart/summary');
+                if (!res.ok) return;
+                const data = await res.json();
+                const badge = document.querySelector('.cart-badge');
+                if (badge) badge.textContent = data.count;
+            }
+            updateCartBadge();
+        </script>
+    @endauth
+
     <!-- Preview Shim Helper -->
     <script>
         // If Vite is not running (production or shim), we might need fallback paths
-        // But for this preview, we'll assume the shim handles the CSS/JS
+        // But for this preview, we'll assume the shim handles the CSS/JS        
     </script>   
 </body>
 </html>

@@ -20,12 +20,12 @@ class DatabaseSeeder extends Seeder
 
         // Products
         $products = [
-            ['name' => "BRUTAL TEE", 'price' => 675000, 'category' => "T-SHIRT"],
-            ['name' => "VOID CAPSULE", 'price' => 1800000, 'category' => "ACCESSORIES"],
-            ['name' => "LOOT BAG", 'price' => 1275000, 'category' => "ACCESSORIES"],
-            ['name' => "RAW DENIM", 'price' => 2850000, 'category' => "PANTS"],
-            ['name' => "VOID HOODIE", 'price' => 1425000, 'category' => "T-SHIRT"],
-            ['name' => "TECH JACKET", 'price' => 3150000, 'category' => "OUTERWEAR"],
+            ['name' => "BRUTAL TEE", 'slug' => 'brutal-tee-1', 'price' => 675000, 'category' => "T-SHIRT"],
+            ['name' => "VOID CAPSULE", 'slug' => 'void-capsule-2', 'price' => 1800000, 'category' => "ACCESSORIES"],
+            ['name' => "LOOT BAG", 'slug' => 'loot-bag-3', 'price' => 1275000, 'category' => "ACCESSORIES"],
+            ['name' => "RAW DENIM", 'slug' => 'raw-denim-4', 'price' => 2850000, 'category' => "PANTS"],
+            ['name' => "VOID HOODIE", 'slug' => 'void-hoodie-5', 'price' => 1425000, 'category' => "T-SHIRT"],
+            ['name' => "TECH JACKET", 'slug' => 'tech-jacket-6', 'price' => 3150000, 'category' => "OUTERWEAR"],
         ];
 
         foreach ($products as $p) {

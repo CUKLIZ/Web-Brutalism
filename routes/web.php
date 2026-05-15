@@ -16,17 +16,37 @@ Route::get('/', function () {
 });
 
 Route::get('/products', function () {
-    $products = Product::with('images')->get();
-    $categories = ["ALL", ...Product::distinct()->pluck('category')];
+    $query = Product::with(['images', 'sizes']);
+    
     $activeCategory = request('category', 'ALL');
     $searchQuery = request('q', '');
+
+    if ($searchQuery) {
+        $query->where('name', 'like', '%' . $searchQuery . '%');
+    }
+
+    if ($activeCategory && $activeCategory !== 'ALL') {
+        $query->where('category', $activeCategory);
+    }
+
+    $products = $query->get();
+    $categories = ["ALL", ...Product::distinct()->pluck('category')];
+
     return view('pages.products', compact('products', 'categories', 'activeCategory', 'searchQuery'));
 })->name('products');
 
-Route::get('/product/{id}', function ($id) {
-    $product = Product::with(['images', 'sizes'])->findOrFail($id);
+Route::get('/product/{category}/{slug}', function ($category, $slug) {
+    $product = Product::with(['images', 'sizes'])
+        ->where('slug', $slug)
+        ->where('category', strtoupper($category))
+        ->firstOrFail();
     return view('pages.product-detail', compact('product'));
 })->name('product.detail');
+
+Route::get('/', function () {
+    $products = Product::with('images')->where('is_featured', true)->take(6)->get();
+    return view('pages.home', compact('products'));
+});
 
 Route::get('/cart/summary', function () {
     $cart = \App\Models\Cart::where('user_id', auth()->id())

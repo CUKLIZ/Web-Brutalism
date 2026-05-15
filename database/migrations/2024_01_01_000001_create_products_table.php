@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug')->unique()->nullable();
             $table->decimal('price', 15, 0); // IDR usually doesn't have decimals
             $table->text('description')->nullable();
             $table->string('content')->nullable();
@@ -18,6 +19,7 @@ return new class extends Migration
             $table->string('fit')->nullable();
             $table->string('colour')->nullable();
             $table->string('category');
+            $table->boolean('is_featured')->default(false);
             $table->timestamps();
         });
     }

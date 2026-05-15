@@ -47,7 +47,10 @@ class ProductController extends Controller
             'weight' => $request->weight,
             'fit' => $request->fit,
             'colour' => $request->colour,
+            'is_featured' => $request->boolean('is_featured'),
         ]);
+
+        $product->update(['slug' => $this->generateSlug($product->name, $product->id)]);
 
         // Sync sizes & stock ke pivot kalau ada
         if ($request->has('sizes')) {
@@ -85,26 +88,40 @@ class ProductController extends Controller
             'name'     => 'required|string|max:255',
             'price'    => 'required|numeric|min:0',
             'category' => 'required|string',
-            'sizes'    => 'required|array',
+            'description' => 'nullable|string',
+            'content'  => 'nullable|string',
+            'weight'   => 'nullable|integer',
+            'fit'      => 'nullable|string',
+            'colour'   => 'nullable|string',
+            'sizes'    => 'nullable|array',
             'images.0' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'images.1' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'images.2' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $product->update([
-            'name'     => $request->name,
-            'price'    => $request->price,
-            'category' => $request->category,
+            'name'        => $request->name,
+            'price'       => $request->price,
+            'category'    => $request->category,
+            'description' => $request->description,
+            'content'     => $request->content,
+            'weight'      => $request->weight,
+            'fit'         => $request->fit,
+            'colour'      => $request->colour,
+            'is_featured' => $request->boolean('is_featured'),
+            'slug'        => $this->generateSlug($request->name, $product->id),
         ]);
 
         // Sync sizes & stock ke pivot
-        $syncData = [];
-        foreach ($request->sizes as $sizeId => $stock) {
-            $syncData[$sizeId] = ['stock' => (int) $stock];
+        if ($request->has('sizes') && is_array($request->sizes)) {
+            $syncData = [];
+            foreach ($request->sizes as $sizeId => $stock) {
+                $syncData[$sizeId] = ['stock' => (int) $stock];
+            }
+            $product->sizes()->sync($syncData);
         }
-        $product->sizes()->sync($syncData);
 
-        // Update gambar — kalau ada file baru, replace yang lama
+        // Update gambar
         $existingImages = $product->images->values();
         foreach ($request->file('images', []) as $index => $file) {
             if ($file) {
@@ -135,5 +152,10 @@ class ProductController extends Controller
         $product->delete();
 
         return response()->json(['success' => true]);
+    }
+    
+    public function generateSlug(string $name, int $id) {
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
+        return $slug . '-' . $id;
     }
 }

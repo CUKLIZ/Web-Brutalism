@@ -45,7 +45,7 @@
                     data-image="{{ $imageSrc }}"
                     data-category="{{ $product->category }}"
                     style="flex: 1; padding: 0.6rem; background: var(--accent-yellow); font-size: 0.8rem; font-weight: 900;">QUICK</button>
-            <a href="/product/{{ $product->id }}" class="brutal-button" style="flex: 1; text-align: center; padding: 0.6rem; background: #fff; font-size: 0.8rem; text-decoration: none; color: black; font-weight: 900;">FULL</a>
+            <a href="{{ route('product.detail', [strtolower($product->category), $product->slug]) }}" class="brutal-button" style="flex: 1; text-align: center; padding: 0.6rem; background: #fff; font-size: 0.8rem; text-decoration: none; color: black; font-weight: 900;">FULL</a>
             {{-- <button class="brutal-button buy-btn" 
                     data-id="{{ $product->id }}"
                     data-name="{{ $product->name }}"

@@ -66,6 +66,16 @@
                     @enderror
                 </div>
             </div>
+            <div>
+                <label style="display: block; font-weight: 900; font-size: 0.7rem; margin-bottom: 8px;">FEATURED_ON_HOMEPAGE</label>
+                <div style="display: flex; gap: 10px; align-items: center; border: 3px solid black; padding: 12px; background: {{ old('is_featured') ? 'var(--neon-green)' : 'white' }};" id="featured-box">
+                    <input type="checkbox" name="is_featured" id="is_featured" value="1"
+                        {{ old('is_featured') ? 'checked' : '' }}
+                        style="width: 20px; height: 20px; cursor: pointer; accent-color: black;"
+                        onchange="document.getElementById('featured-box').style.background = this.checked ? 'var(--neon-green)' : 'white'">
+                    <label for="is_featured" style="font-weight: 900; font-size: 0.9rem; cursor: pointer;">SHOW_ON_HOMEPAGE</label>
+                </div>
+            </div>
         </div>
 
         {{-- PRODUCT_SPECS --}}
