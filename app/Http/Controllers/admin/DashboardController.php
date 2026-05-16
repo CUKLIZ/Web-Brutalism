@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -69,5 +70,68 @@ class DashboardController extends Controller
     public function showOrder($id) {
         $order = Order::with(['user', 'items.product', 'items.size', 'address'])->findOrFail($id);
         return view('admin.orders-detail', compact('order'));
+    }
+
+    public function users(Request $request)
+    {
+        $query = \App\Models\User::withCount('orders')->latest();
+
+        if ($request->filled('q')) {
+            $query->where('username', 'like', '%' . $request->q . '%')
+                ->orWhere('email', 'like', '%' . $request->q . '%');
+        }
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+        if ($request->filled('status')) {
+            $query->where('is_banned', $request->status === 'banned');
+        }
+
+        $users = $query->get()->load('orders');
+        return view('admin.users', compact('users'));
+    }
+
+    public function updateRole($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+        $authUser = Auth::user();
+
+        if ($user->id === $authUser->id) {
+            return back()->with('error', 'CANNOT_CHANGE_OWN_ROLE');
+        }
+
+        $hierarchy = ['customer' => 1, 'admin' => 2, 'developer' => 3];
+        $authLevel = $hierarchy[$authUser->role] ?? 0;
+        $targetLevel = $hierarchy[$user->role] ?? 0;
+
+        if ($authLevel <= $targetLevel) {
+            return back()->with('error', 'INSUFFICIENT_PERMISSIONS');
+        }
+
+        $user->update(['role' => $user->role === 'admin' ? 'customer' : 'admin']);
+        return back()->with('success', 'ROLE_UPDATED');
+    }
+
+    public function toggleBan($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+        $authUser = Auth::user();
+
+        if ($user->id === $authUser->id) {
+            return back()->with('error', 'CANNOT_BAN_SELF');
+        }
+
+        // Hirarki: developer > admin > customer
+        $hierarchy = ['customer' => 1, 'admin' => 2, 'developer' => 3];
+
+        $authLevel = $hierarchy[$authUser->role] ?? 0;
+        $targetLevel = $hierarchy[$user->role] ?? 0;
+
+        if ($authLevel <= $targetLevel) {
+            return back()->with('error', 'INSUFFICIENT_PERMISSIONS');
+        }
+
+        $user->update(['is_banned' => !$user->is_banned]);
+        return back()->with('success', $user->is_banned ? 'USER_BANNED' : 'USER_UNBANNED');
     }
 }

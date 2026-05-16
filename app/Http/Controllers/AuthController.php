@@ -15,21 +15,31 @@ class AuthController extends Controller
         return view('pages.login');
     }
 
-    public function login(Request $request)
+   public function login(Request $request)
     {
         $request->validate([
-        'identifier' => 'required|string',
-        'password' => 'required',]);
+            'identifier' => 'required|string',
+            'password'   => 'required',
+        ]);
 
-        // Check if input is email or username
-        $fieldType = filter_var($request->identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-
+        // Cek input email atau username
+        $fieldType   = filter_var($request->identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         $credentials = [
             $fieldType => $request->identifier,
             'password' => $request->password,
         ];
 
         if (Auth::attempt($credentials)) {
+            // Cek banned setelah berhasil login
+            if (Auth::user()->is_banned) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return back()->withErrors([
+                    'identifier' => 'ACCOUNT_BANNED. CONTACT_SUPPORT.',
+                ])->withInput();
+            }
+
             $request->session()->regenerate();
             return redirect()->intended('/');
         }
@@ -38,7 +48,6 @@ class AuthController extends Controller
             'identifier' => 'WRONG_CREDENTIALS. ACCESS_DENIED.',
         ])->withInput();
     }
-
     public function showRegister()
     {
         return view('pages.register');
@@ -69,4 +78,6 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect('/login');
     }
+
+
 }

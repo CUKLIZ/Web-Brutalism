@@ -60,5 +60,15 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+
+        $users = [
+            ['username' => 'Dev', 'email' => 'Dev@example.com', 'password' => bcrypt('12345678'), 'role' => 'developer'],
+            ['username' => 'Tamara', 'email' => 'tamara@example.com', 'password' => bcrypt('12345678'), 'role' => 'admin'],
+            ['username' => 'About', 'email' => 'about@example.com', 'password' => bcrypt('12345678'), 'role' => 'customer']
+        ];
+
+        foreach ($users as $user) {
+            \App\Models\User::create($user);
+        }
     }
 }

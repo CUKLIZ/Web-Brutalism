@@ -56,7 +56,7 @@
                     </div>
                 </a>
 
-                @if(Auth::user()->role === 'admin')
+                @if(Auth::user()->role === 'admin' || Auth::user()->role === 'developer')
                     <div class="nav-separator"></div>
                     <a href="/admin" class="brutal-font" style="
                         background: black;

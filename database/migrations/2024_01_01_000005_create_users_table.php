@@ -14,7 +14,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('avatar')->nullable();
-            $table->enum('role', ['admin', 'customer'])->default('customer');
+            $table->enum('role', ['developer', 'admin', 'customer'])->default('customer');
+            $table->boolean('is_banned')->default(false);
             $table->timestamps();
         });
     }

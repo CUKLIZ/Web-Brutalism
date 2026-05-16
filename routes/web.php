@@ -116,5 +116,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/orders', [DashboardController::class, 'orders'])->name('admin.orders');
         Route::patch('/orders/{id}/complete', [DashboardController::class, 'complete'])->name('admin.orders.complete');
         Route::get('/orders/{id}', [DashboardController::class, 'showOrder'])->name('admin.orders.show');
+
+        Route::get('/users', [DashboardController::class, 'users'])->name('admin.users');
+        Route::patch('/users/{id}/role', [DashboardController::class, 'updateRole'])->name('admin.users.role');
+        Route::patch('/users/{id}/ban', [DashboardController::class, 'toggleBan'])->name('admin.users.ban');
     });
 });

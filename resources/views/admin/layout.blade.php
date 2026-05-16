@@ -97,7 +97,21 @@
                 <span class="sidebar-label">PRIMARY_MODULES</span>
                 <a href="/admin" class="admin-nav-link {{ request()->is('admin') ? 'active' : '' }}">DASHBOARD</a>
                 <a href="/admin/products" class="admin-nav-link {{ request()->is('admin/products') ? 'active' : '' }}">PRODUCTS_DB</a>
-                <a href="/admin/orders" class="admin-nav-link {{ request()->is('admin/orders') ? 'active' : '' }}">ORDERS</a>
+                {{-- <a href="/admin/orders" class="admin-nav-link {{ request()->is('admin/orders') ? 'active' : '' }}">ORDERS</a> --}}
+                
+                @php
+                    $pendingCount = \App\Models\Order::where('status', 'pending')->count();
+                @endphp
+                <a href="/admin/orders?status=pending" class="admin-nav-link {{ request()->is('admin/orders*') ? 'active' : '' }}">
+                    ORDERS_LOG
+                    @if ($pendingCount > 0)
+                        <span style="background: #FF0000; color: white; padding: 1px 7px; font-size: 0.6rem; font-weight: 900; margin-left: 8px; border: 2px solid white;">
+                            {{ $pendingCount }}
+                        </span>
+                    @endif
+                </a>
+
+                <a href="/admin/users" class="admin-nav-link {{ request()->is('admin/users*') ? 'active' : '' }}">USERS_DB</a>
 
                 <span class="sidebar-label" style="margin-top: 30px;">OPERATIONS</span>
                 <a href="/admin/products/create" class="admin-nav-link {{ request()->is('admin/products/create') ? 'active' : '' }}">ADD_NEW_ITEM</a>
