@@ -23,6 +23,17 @@
                     style="width: 100%; background: var(--neon-green); color: black; font-size: 1.5rem; padding: 20px 0; font-weight: 900; margin-top: 10px;">
                 LOGIN_NOW
             </button>
+
+            <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                <div style="flex: 1; height: 2px; background: black;"></div>
+                <span style="font-size: 0.6rem; font-weight: 900; color: #666;">DEBUG_TESTING</span>
+                <div style="flex: 1; height: 2px; background: black;"></div>
+            </div>
+
+            <a href="/banned" class="brutal-button" 
+               style="width: 100%; background: #ff0000; color: white; font-size: 1rem; padding: 12px 0; font-weight: 900; text-align: center; text-decoration: none; border-color: black;">
+                TEST_BANNED_INTERFACE
+            </a>
         </form>
 
         <div style="margin-top: 30px; text-align: center;">
