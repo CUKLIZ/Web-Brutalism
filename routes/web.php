@@ -9,11 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\admin\DashboardController;
-
-Route::get('/', function () {
-    $products = Product::with('images')->take(6)->get();
-    return view('pages.home', compact('products'));
-});
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/products', function () {
     $query = Product::with(['images', 'sizes']);
@@ -94,6 +90,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/order/{order_code}/detail', [CheckoutController::class, 'showDetail'])->name('order.detail');
     Route::patch('/order/{order_code}/cancel', [CheckoutController::class, 'cancel'])->name('order.cancel');
 });
+
+Route::get('/banned', function () {
+    // Ga login → ke login
+    if (!Auth::check()) {
+        return redirect()->route('login');
+    }
+    // Login tapi ga banned → ke home
+    if (!Auth::user()->is_banned) {
+        return redirect('/');
+    }
+    return view('pages.banned', ['user' => Auth::user()]);
+})->name('banned');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');

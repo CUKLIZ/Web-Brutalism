@@ -30,16 +30,10 @@ class AuthController extends Controller
         ];
 
         if (Auth::attempt($credentials)) {
-            // Cek banned setelah berhasil login
             if (Auth::user()->is_banned) {
-                Auth::logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
-                return back()->withErrors([
-                    'identifier' => 'ACCOUNT_BANNED. CONTACT_SUPPORT.',
-                ])->withInput();
+                $request->session()->regenerate();
+                return redirect()->route('banned');
             }
-
             $request->session()->regenerate();
             return redirect()->intended('/');
         }
