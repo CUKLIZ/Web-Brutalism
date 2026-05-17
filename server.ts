@@ -141,6 +141,11 @@ async function startServer() {
     res.render("pages/banned");
   });
 
+  // 404 Handler - MUST BE LAST
+  app.use((req, res) => {
+    res.status(404).render("pages/404");
+  });
+
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });

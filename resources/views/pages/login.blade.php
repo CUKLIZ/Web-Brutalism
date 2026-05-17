@@ -31,8 +31,13 @@
             </div>
 
             <a href="/banned" class="brutal-button" 
-               style="width: 100%; background: #ff0000; color: white; font-size: 1rem; padding: 12px 0; font-weight: 900; text-align: center; text-decoration: none; border-color: black;">
+               style="width: 100%; background: #ff0000; color: white; font-size: 1rem; padding: 12px 0; font-weight: 900; text-align: center; text-decoration: none; border-color: black; margin-bottom: 10px;">
                 TEST_BANNED_INTERFACE
+            </a>
+
+            <a href="/this-page-does-not-exist" class="brutal-button" 
+               style="width: 100%; background: var(--accent-yellow); color: black; font-size: 1rem; padding: 12px 0; font-weight: 900; text-align: center; text-decoration: none; border-color: black;">
+                TEST_404_INTERFACE
             </a>
         </form>
 
