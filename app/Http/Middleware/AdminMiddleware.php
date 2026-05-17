@@ -18,7 +18,7 @@ class AdminMiddleware
     {
         // return $next($request);
         if (!Auth::check() || !in_array(Auth::user()->role, ['admin', 'developer'])) {
-            abort(403);
+            abort(404); // Bukan 403, jadi keliatan kayak page ga ada
         }
 
         return $next($request);
