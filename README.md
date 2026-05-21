@@ -303,6 +303,15 @@ php artisan tinker
 
 ---
 
+## 🔗 BRANCHES
+
+| Branch | Description |
+|--------|-------------|
+| `main` | ⚡ Frontend prototype — design only |
+| `development` | ⚔️ Full Laravel + MySQL implementation — you are here |
+
+---
+
 ## 📄 LICENSE
 
 MIT License — Built for the underground, open for the culture.
