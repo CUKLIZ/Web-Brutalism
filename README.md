@@ -5,7 +5,11 @@
   <img src="https://img.shields.io/badge/Status-Design_Only-A3FF00?style=flat-square"/>
 </p>
 
-# ⚡ VOID_STREET
+<p align="center">
+  <img src="public/favicon.svg" width="60"/>
+</p>
+
+# VOID_STREET
 
 > **Underground Neo-Brutalist Streetwear E-Commerce Engine**
 
