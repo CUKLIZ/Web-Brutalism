@@ -72,15 +72,15 @@
                 <div style="display: grid; gap: 15px;">
                     <div>
                         <span style="display: block; font-weight: 900; font-size: 0.8rem; color: rgba(0,0,0,0.6);">ID_TAG</span>
-                        <span class="brutal-font" style="font-size: 1.5rem;">USERNAME_EXAMPLE</span>
+                        <span class="brutal-font" id="profile-username" style="font-size: 1.5rem;">USERNAME_EXAMPLE</span>
                     </div>
                     <div>
                         <span style="display: block; font-weight: 900; font-size: 0.8rem; color: rgba(0,0,0,0.6);">COMM_CHANNEL</span>
-                        <span class="brutal-font" style="font-size: 1.5rem;">EMAIL_EXAMPLE</span>
+                        <span class="brutal-font" id="profile-email" style="font-size: 1.5rem;">EMAIL_EXAMPLE</span>
                     </div>
                     <div>
                         <span style="display: block; font-weight: 900; font-size: 0.8rem; color: rgba(0,0,0,0.6);">CLEARANCE_LEVEL</span>
-                        <span style="background: black; color: var(--neon-green); padding: 4px 12px; font-weight: 900; font-size: 1rem; border: 2px solid black; display: inline-block; margin-top: 5px;">CUSTOMER</span>
+                        <span id="profile-clearance" style="background: black; color: var(--neon-green); padding: 4px 12px; font-weight: 900; font-size: 1rem; border: 2px solid black; display: inline-block; margin-top: 5px;">CUSTOMER</span>
                     </div>
                 </div>
             </section>
@@ -150,17 +150,17 @@
             <div style="display: grid; gap: 20px;">
                 <div style="display: grid; gap: 8px;">
                     <label class="brutal-font" style="font-size: 1rem;">USERNAME</label>
-                    <input type="text" value="USERNAME_EXAMPLE" style="width: 100%; border: 4px solid black; padding: 15px; font-family: inherit; font-weight: 900; outline: none;">
+                    <input type="text" id="edit-username" value="USERNAME_EXAMPLE" style="width: 100%; border: 4px solid black; padding: 15px; font-family: inherit; font-weight: 900; outline: none;">
                 </div>
                 <div style="display: grid; gap: 8px;">
                     <label class="brutal-font" style="font-size: 1rem;">EMAIL_ADDRESS</label>
-                    <input type="email" value="EMAIL_EXAMPLE" style="width: 100%; border: 4px solid black; padding: 15px; font-family: inherit; font-weight: 900; outline: none;">
+                    <input type="email" id="edit-email" value="EMAIL_EXAMPLE" style="width: 100%; border: 4px solid black; padding: 15px; font-family: inherit; font-weight: 900; outline: none;">
                 </div>
                 <div style="display: grid; gap: 8px;">
                     <label class="brutal-font" style="font-size: 1rem;">PASSWORD (SECURE_ENCRYPTION)</label>
                     <input type="password" placeholder="********" style="width: 100%; border: 4px solid black; padding: 15px; font-family: inherit; font-weight: 900; outline: none;">
                 </div>
-                <button class="brutal-button" style="width: 100%; margin-top: 10px;">SAVE_CHANGES</button>
+                <button onclick="saveProfile()" class="brutal-button" style="width: 100%; margin-top: 10px;">SAVE_CHANGES</button>
             </div>
         </section>
 
@@ -247,7 +247,60 @@
         <section class="brutal-card" style="background: var(--brutal-black); color: white;">
             <h2 style="font-size: 2rem; border-bottom: 4px solid var(--gallery-white); padding-bottom: 10px; margin-bottom: 20px;">05_DANGER_ZONE</h2>
             <p style="margin-bottom: 20px; font-weight: 700; opacity: 0.8;">DISCONNECT FROM SYSTEM VAULT TEMPORARILY.</p>
-            <button onclick="window.BrutalModal.confirm('EXIT_VAULT?', 'YOUR SESSION WILL BE TERMINATED.', () => { window.location.href='/login'; }, 'ABORT_SESSION', 'STAY_LINKED')" class="brutal-button" style="background: #FF0000; color: white; width: 100%; border-color: white;">ABORT_SESSION_(LOGOUT)</button>
+            <button onclick="window.BrutalModal.confirm('EXIT_VAULT?', 'YOUR SESSION WILL BE TERMINATED.', () => { localStorage.removeItem('currentUser'); window.location.href='/login'; }, 'ABORT_SESSION', 'STAY_LINKED')" class="brutal-button" style="background: #FF0000; color: white; width: 100%; border-color: white;">ABORT_SESSION_(LOGOUT)</button>
         </section>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProfileData();
+    });
+
+    function loadProfileData() {
+        const user = JSON.parse(localStorage.getItem('currentUser') || '{"username": "ANON_VOID", "email": "anon@void.st"}');
+        
+        // Display credentials safely
+        const displayUsername = document.getElementById('profile-username');
+        const displayEmail = document.getElementById('profile-email');
+        const displayClearance = document.getElementById('profile-clearance');
+        
+        const inputUsername = document.getElementById('edit-username');
+        const inputEmail = document.getElementById('edit-email');
+
+        if (displayUsername) displayUsername.innerText = user.username.toUpperCase();
+        if (displayEmail) displayEmail.innerText = user.email.toUpperCase();
+        if (displayClearance) {
+            // If they are logged in, make them a VERIFIED agent!
+            displayClearance.innerText = user.username === 'ANON_VOID' ? 'UNASSIGNED_ACCESS' : 'VERIFIED_AGENT';
+        }
+
+        if (inputUsername) inputUsername.value = user.username;
+        if (inputEmail) inputEmail.value = user.email;
+    }
+
+    function saveProfile() {
+        const inputUsername = document.getElementById('edit-username').value.trim();
+        const inputEmail = document.getElementById('edit-email').value.trim();
+
+        if (!inputUsername || !inputEmail) {
+            window.BrutalModal.show({
+                title: 'INPUT_ERROR',
+                message: 'USERNAME_AND_EMAIL_FIELDS_CANNOT_BE_EMPTY.',
+                tag: 'VAL_CHECK_FAILED'
+            });
+            return;
+        }
+
+        const updatedUser = { username: inputUsername, email: inputEmail };
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        
+        loadProfileData();
+
+        window.BrutalModal.show({
+            title: 'DATA_WRITE_CONFIRMED',
+            message: 'YOUR CREDENTIAL DATABASE IN COLD STORAGE HAS BEEN OVERWRITTEN.',
+            tag: 'SECURE_STORAGE_SYNCED'
+        });
+    }
+</script>

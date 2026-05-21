@@ -82,9 +82,24 @@
 
             <!-- ACTIONS -->
             <div style="display: flex; flex-direction: column; gap: 15px;">
-                <button class="brutal-button buy-btn" style="background: var(--neon-green); color: black; font-size: 2.5rem; width: 100%; padding: 25px 0; display: flex; align-items: center; justify-content: space-between; padding-left: 30px; padding-right: 30px;">
+                <button class="brutal-button buy-btn" 
+                        data-id="<%= product.id %>"
+                        data-name="<%= product.name %>"
+                        data-price="<%= product.price %>"
+                        data-image="<%= product.image %>"
+                        data-category="<%= product.category %>"
+                        style="background: var(--neon-green); color: black; font-size: 2.5rem; width: 100%; padding: 25px 0; display: flex; align-items: center; justify-content: space-between; padding-left: 30px; padding-right: 30px;">
                     <span style="font-style: italic;">ADD_TO_BAG</span>
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                </button>
+                <button class="brutal-button wishlist-toggle-btn" 
+                        data-id="<%= product.id %>"
+                        data-name="<%= product.name %>"
+                        data-price="<%= product.price %>"
+                        data-image="<%= product.image %>"
+                        data-category="<%= product.category %>"
+                        style="background: white; color: black; font-size: 1.5rem; width: 100%; padding: 15px 0; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 15px; border: 4px solid black; box-shadow: 6px 6px 0px black; transition: all 0.1s ease; cursor: pointer;">
+                    <span class="heart-icon">♡</span> <span class="btn-text">ADD_TO_WISHLIST</span>
                 </button>
                 <button class="brutal-button" style="background: #E5E5E5; color: black; font-size: 1.2rem; width: 100%; padding: 15px 0; font-style: italic;">
                     INSTANT_BUY_CMD

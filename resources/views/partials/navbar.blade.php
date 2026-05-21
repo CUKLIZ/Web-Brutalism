@@ -24,6 +24,11 @@
                 <span class="cart-badge">2</span>
             </a>
             <div class="nav-separator"></div>
+            <a href="/wishlist" class="brutal-font nav-link <%= path === '/wishlist' ? 'active' : '' %>" style="display: flex; align-items: center; gap: 8px;">
+                SAVED_VAULT
+                <span id="wishlist-badge" class="cart-badge" style="background: var(--accent-pink); color: white; display: none;">0</span>
+            </a>
+            <div class="nav-separator"></div>
             <a href="/profile" class="brutal-font nav-link <%= path === '/profile' ? 'active' : '' %>">PROFILE</a>
             <div class="nav-separator"></div>
             <a href="/login" class="brutal-font nav-link <%= path === '/login' ? 'active' : '' %>">LOGIN</a>

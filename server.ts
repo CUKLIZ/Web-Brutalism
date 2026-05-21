@@ -68,6 +68,10 @@ async function startServer() {
     res.render("pages/cart", { cartItems: [products[0], products[1]] });
   });
 
+  app.get("/wishlist", (req, res) => {
+    res.render("pages/wishlist");
+  });
+
   app.get("/login", (req, res) => {
     res.render("pages/login");
   });

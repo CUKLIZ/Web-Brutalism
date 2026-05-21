@@ -2,7 +2,19 @@
      <% if (typeof useDataAttrs !== 'undefined' && useDataAttrs) { %>
      data-name="<%= product.name.toLowerCase() %>" 
      data-category="<%= product.category %>"
-     <% } %>>
+     <% } %>
+     style="position: relative;">
+     
+    <button class="brutal-button wishlist-toggle-btn" 
+            data-id="<%= product.id %>"
+            data-name="<%= product.name %>"
+            data-price="<%= product.price %>"
+            data-image="<%= product.image %>"
+            data-category="<%= product.category %>"
+            style="position: absolute; top: 15px; right: 15px; width: 45px; height: 45px; padding: 0; z-index: 20; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: white; color: black; border: 4px solid black; box-shadow: 4px 4px 0px black; cursor: pointer; transition: all 0.1s ease;">
+        ♡
+    </button>
+    
     <img src="<%= product.image %>" alt="<%= product.name %>" style="width: 100%; height: 250px; object-fit: cover; border-bottom: 4px solid black;">
     
     <div class="flex-between" style="padding: 15px; background: #fff;">
