@@ -4,13 +4,29 @@
     $firstImage = $product->images->first()->image_path ?? null;
     $imageSrc = $firstImage ? asset('storage/' . $firstImage) : 'https://placehold.co/400x250/000/fff?text=NO_IMAGE';
     $totalStock = $product->sizes->sum('pivot.stock');
+    $isWishlisted = auth()->check() 
+        ? \App\Models\Wishlist::where('user_id', auth()->id())->where('product_id', $product->id)->exists()
+        : false;
 @endphp
 
 <div class="brutal-card product-card {{ $className }}" 
+     style="position: relative;"
      @if($useDataAttrs)
      data-name="{{ strtolower($product->name) }}" 
      data-category="{{ $product->category }}"
      @endif>
+
+    @auth
+        @if(!$isAdmin)
+            <button 
+                onclick="toggleWishlist(this, {{ $product->id }})"
+                data-wishlisted="{{ $isWishlisted ? 'true' : 'false' }}"
+                style="position: absolute; top: 15px; right: 15px; z-index: 20; width: 45px; height: 45px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: {{ $isWishlisted ? 'black' : 'white' }}; color: {{ $isWishlisted ? 'white' : 'black' }}; border: 4px solid black; box-shadow: 4px 4px 0px black; cursor: pointer;">
+                {{ $isWishlisted ? '♥' : '♡' }}
+            </button>
+        @endif
+    @endauth
+
     <img src="{{ $imageSrc }}" alt="{{ $product->name }}" style="width: 100%; height: 250px; object-fit: cover; border-bottom: 4px solid black;">
     
     <div class="flex-between" style="padding: 15px; background: #fff;">
@@ -46,13 +62,6 @@
                     data-category="{{ $product->category }}"
                     style="flex: 1; padding: 0.6rem; background: var(--accent-yellow); font-size: 0.8rem; font-weight: 900;">QUICK</button>
             <a href="{{ route('product.detail', [strtolower($product->category), $product->slug]) }}" class="brutal-button" style="flex: 1; text-align: center; padding: 0.6rem; background: #fff; font-size: 0.8rem; text-decoration: none; color: black; font-weight: 900;">FULL</a>
-            {{-- <button class="brutal-button buy-btn" 
-                    data-id="{{ $product->id }}"
-                    data-name="{{ $product->name }}"
-                    data-price="{{ $product->price }}"
-                    data-image="{{ $imageSrc }}"
-                    data-category="{{ $product->category }}"
-                    style="flex: 1; padding: 0.6rem; background: var(--accent-pink); font-size: 0.8rem; color: white; font-weight: 900;">LOOT</button> --}}
         @endif
     </div>
 </div>

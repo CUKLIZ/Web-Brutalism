@@ -10,6 +10,7 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/products', function () {
@@ -93,6 +94,11 @@ Route::middleware('auth')->group(function () {
 
     // Review
     Route::post('/product/{product}/review', [ReviewController::class, 'store'])->name('review.store');
+
+    // Wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+    Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+    Route::delete('/wishlist/clear', [WishlistController::class, 'clear'])->name('wishlist.clear');
 });
 
 Route::get('/banned', function () {

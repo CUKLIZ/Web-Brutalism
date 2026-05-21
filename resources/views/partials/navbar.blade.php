@@ -21,6 +21,16 @@
             <div class="nav-separator"></div>
 
             @auth
+                {{-- WISHLIST --}}
+                <a href="{{ route('wishlist') }}" class="brutal-font nav-link {{ request()->is('wishlist') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 8px;">
+                    ♥ SAVED_VAULT
+                    @php $wishlistCount = \App\Models\Wishlist::where('user_id', auth()->id())->count(); @endphp
+                    @if($wishlistCount > 0)
+                        <span style="background: var(--accent-pink); color: white; border: 2px solid black; font-size: 0.6rem; font-weight: 900; padding: 1px 6px; min-width: 20px; text-align: center;">{{ $wishlistCount }}</span>
+                    @endif
+                </a>
+                <div class="nav-separator"></div>
+
                 <a href="/cart" class="brutal-font nav-link {{ request()->is('cart') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 8px;">
                     YOUR LOOT
                     <span class="cart-badge">2</span>

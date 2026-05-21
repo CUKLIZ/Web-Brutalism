@@ -166,7 +166,7 @@
 </section>
 
 @php
-    $reviews     = $product->reviews()->with('user')->latest()->get();
+    $reviews     = isset($product) ? $product->reviews()->with('user')->latest()->get() : collect();
     $avgRating   = $reviews->avg('rating') ?? 0;
     $totalReviews = $reviews->count();
     $distribution = [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0];
@@ -176,7 +176,7 @@
     $canReview      = false;
     $alreadyReviewed = false;
 
-    if (Auth::check()) {
+    if (Auth::check() && isset($product)) {
         $hasBought = \App\Models\Order::where('user_id', Auth::id())
             ->whereIn('status', ['paid', 'completed'])
             ->whereHas('items', fn($q) => $q->where('product_id', $product->id))

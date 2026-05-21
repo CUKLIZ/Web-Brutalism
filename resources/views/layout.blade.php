@@ -29,13 +29,32 @@
                 if (badge) badge.textContent = data.count;
             }
             updateCartBadge();
+
+            function toggleWishlist(btn, productId) {
+                fetch(`/wishlist/toggle/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.saved) {
+                        btn.innerHTML = '♥';
+                        btn.style.background = 'black';
+                        btn.style.color = 'white';
+                        btn.dataset.wishlisted = 'true';
+                    } else {
+                        btn.innerHTML = '♡';
+                        btn.style.background = 'white';
+                        btn.style.color = 'black';
+                        btn.dataset.wishlisted = 'false';
+                    }
+                });
+            }
         </script>
     @endauth
-
-    <!-- Preview Shim Helper -->
-    <script>
-        // If Vite is not running (production or shim), we might need fallback paths
-        // But for this preview, we'll assume the shim handles the CSS/JS        
-    </script>   
 </body>
 </html>
