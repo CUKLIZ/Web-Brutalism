@@ -98,3 +98,145 @@
 
     </div>
 </section>
+
+<!-- REVIEWS SECTION -->
+<section class="container" style="padding: 100px 20px; background: #eee; border-top: 8px solid black;">
+    <div style="margin-bottom: 60px;">
+        <div style="background: black; color: white; display: inline-block; padding: 2px 12px; font-weight: 900; font-size: 0.7rem; margin-bottom: 20px;">[ COMMUNITY_FEEDBACK ]</div>
+        <h2 style="font-size: 4rem; font-weight: 900; line-height: 0.8; letter-spacing: -3px; margin: 0; text-transform: uppercase;">REVIEWS_AND_LOGS</h2>
+    </div>
+
+    <div class="grid" style="grid-template-columns: 350px 1fr; gap: 60px; align-items: start;">
+        <!-- STATS COLUMN -->
+        <div style="position: sticky; top: 120px;">
+            <div class="brutal-card" style="background: white; padding: 30px; margin-bottom: 30px; border: 4px solid black; box-shadow: 10px 10px 0px black;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div id="avg-rating" style="font-size: 5.5rem; font-weight: 900; line-height: 1;">0.0</div>
+                    <div id="avg-stars" style="font-size: 1.5rem; margin-top: 10px;">☆☆☆☆☆</div>
+                    <div id="total-reviews-count" style="font-size: 0.7rem; font-weight: 900; opacity: 0.5; margin-top: 5px;">BASED_ON_0_SIGNALS</div>
+                </div>
+
+                <div id="rating-distribution" style="display: grid; gap: 10px;">
+                    <% [5,4,3,2,1].forEach(star => { %>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 0.7rem; font-weight: 900; width: 40px;"><%= star %>_STAR</span>
+                            <div style="flex: 1; height: 12px; background: #eee; border: 2px solid black; position: relative; overflow: hidden;">
+                                <div id="bar-<%= star %>" style="position: absolute; top: 0; left: 0; height: 100%; background: var(--neon-green); width: 0%;"></div>
+                            </div>
+                            <span id="percent-<%= star %>" style="font-size: 0.6rem; font-weight: 900; width: 30px;">0%</span>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+
+            <div class="brutal-card" style="background: black; color: white; padding: 20px; border: 4px solid black; box-shadow: 10px 10px 0px var(--neon-green);">
+                <h3 style="font-size: 0.8rem; margin-bottom: 15px; background: var(--neon-green); color: black; display: inline-block; padding: 2px 10px; font-weight: 900;">[REQUIREMENT]</h3>
+                <p style="font-size: 0.75rem; font-weight: 900; opacity: 0.8; line-height: 1.6;">
+                    ONLY VERIFIED PURCHASERS WHO HAVE COMPLETED THE TRANSACTION CYCLE CAN TRANSMIT DATA TO THIS ARCHIVE.
+                </p>
+            </div>
+        </div>
+
+        <!-- REVIEWS LIST COLUMN -->
+        <div id="reviews-list-container">
+            <div id="empty-reviews-state" style="display: none; padding: 100px 40px; text-align: center; border: 6px dashed black; background: white;">
+                <h2 style="font-weight: 950; font-size: 3rem; margin-bottom: 10px; opacity: 0.1;">NO_SIGNAL_FROM_THE_CULT_YET</h2>
+                <p style="font-weight: 900; font-size: 0.8rem; opacity: 0.4;">BE_THE_FIRST_TO_INFILTRATE_THIS_ARCHIVE.</p>
+            </div>
+            
+            <div id="reviews-list" style="display: grid; gap: 40px;">
+                <!-- Review cards injected here -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const productId = '<%= product.id %>';
+        loadReviews(productId);
+    });
+
+    function loadReviews(pId) {
+        const reviews = JSON.parse(localStorage.getItem('brutal_reviews') || '[]')
+            .filter(r => String(r.productId) === String(pId))
+            .sort((a,b) => b.id - a.id);
+
+        const list = document.getElementById('reviews-list');
+        const empty = document.getElementById('empty-reviews-state');
+
+        if (reviews.length === 0) {
+            empty.style.display = 'block';
+            list.style.display = 'none';
+        } else {
+            empty.style.display = 'none';
+            list.style.display = 'grid';
+            
+            list.innerHTML = '';
+            reviews.forEach(review => {
+                const card = document.createElement('div');
+                card.className = 'brutal-card';
+                card.style.background = 'white';
+                card.style.padding = '40px';
+                card.style.border = '4px solid black';
+                card.style.boxShadow = '12px 12px 0px black';
+                
+                const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+                const date = new Date(review.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="width: 40px; height: 40px; background: black; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 950; border: 3px solid black;">${review.username[0]}</div>
+                                <div>
+                                    <span style="font-weight: 950; font-size: 1.2rem; text-transform: uppercase; display: block; line-height: 1;">${review.username}</span>
+                                    <span style="font-size: 0.6rem; font-weight: 900; opacity: 0.4; margin-top: 5px; display: block;">TIMESTAMP: ${date}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.5rem; line-height: 1; margin-bottom: 8px;">${stars}</div>
+                            <span style="background: var(--neon-green); color: black; padding: 2px 10px; font-size: 0.6rem; font-weight: 950; border: 2px solid black; display: inline-block;">VERIFIED_PURCHASE</span>
+                        </div>
+                    </div>
+                    <div style="border-top: 4px solid black; padding-top: 25px;">
+                        <p style="font-weight: 900; font-size: 1.3rem; line-height: 1.3; margin: 0; font-style: italic;">"${review.text}"</p>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        updateStats(reviews);
+    }
+
+    function updateStats(reviews) {
+        if (reviews.length === 0) {
+            document.getElementById('avg-rating').innerText = '0.0';
+            document.getElementById('avg-stars').innerText = '☆☆☆☆☆';
+            document.getElementById('total-reviews-count').innerText = 'BASED_ON_0_SIGNALS';
+            return;
+        }
+
+        const total = reviews.length;
+        const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+        const avg = (sum / total).toFixed(1);
+
+        document.getElementById('avg-rating').innerText = avg;
+        document.getElementById('total-reviews-count').innerText = `BASED_ON_${total}_SIGNALS`;
+        
+        const avgRound = Math.round(avg);
+        document.getElementById('avg-stars').innerText = '★'.repeat(avgRound) + '☆'.repeat(5 - avgRound);
+
+        // Distribution
+        const counts = {1:0, 2:0, 3:0, 4:0, 5:0};
+        reviews.forEach(r => counts[r.rating]++);
+
+        [1,2,3,4,5].forEach(star => {
+            const pct = Math.round((counts[star] / total) * 100);
+            document.getElementById(`bar-${star}`).style.width = `${pct}%`;
+            document.getElementById(`percent-${star}`).innerText = `${pct}%`;
+        });
+    }
+</script>

@@ -62,6 +62,34 @@
     </div>
 </div>
 
+<!-- REVIEW MODAL -->
+<div id="review-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+    <div class="brutal-card" style="max-width: 500px; width: 90%; background: white; padding: 40px; position: relative;">
+        <div style="background: black; color: white; display: inline-block; padding: 2px 10px; font-weight: 900; font-size: 0.6rem; margin-bottom: 20px;">[ FEEDBACK_PROTOCOL_V1 ]</div>
+        <h2 id="rv-product-name" style="font-size: 2.5rem; line-height: 1; margin-bottom: 30px; letter-spacing: -2px;">PRODUCT_NAME</h2>
+        
+        <div style="margin-bottom: 30px;">
+            <label style="display: block; font-weight: 900; font-size: 0.7rem; margin-bottom: 10px;">STAR_RATING</label>
+            <div style="display: flex; gap: 5px;">
+                <% [1,2,3,4,5].forEach(i => { %>
+                    <button class="rv-star brutal-button" onclick="setRating(<%= i %>)" style="width: 50px; height: 50px; font-size: 1.5rem; display: flex; align-items: center; justify-content: center;">★</button>
+                <% }) %>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 40px;">
+            <label style="display: block; font-weight: 900; font-size: 0.7rem; margin-bottom: 10px;">REVIEW_TEXT_LOG</label>
+            <textarea id="review-text" placeholder="SHARE_YOUR_VOICE..." 
+                      style="width: 100%; height: 150px; border: 4px solid black; padding: 15px; font-family: inherit; font-weight: 900; outline: none; background: #f0f0f0; resize: none;"></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <button onclick="submitReview()" class="brutal-button" style="background: var(--neon-green); font-size: 1.2rem; padding: 15px 0;">SUBMIT_REVIEW</button>
+            <button onclick="closeReviewModal()" class="brutal-button" style="background: white; font-size: 1.2rem; padding: 15px 0;">CANCEL</button>
+        </div>
+    </div>
+</div>
+
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const orderId = urlParams.get('id');
@@ -94,14 +122,47 @@
         manifest.innerHTML = '';
         currentOrder.items.forEach(item => {
             const div = document.createElement('div');
-            div.className = 'flex-between';
+            div.className = 'flex-column';
             div.style.borderBottom = '2px solid rgba(0,0,0,0.1)';
-            div.style.paddingBottom = '10px';
-            div.innerHTML = `<div style="font-weight: 900;">${item.name}</div><div style="font-weight: 900;">${formatCurrency(item.price)}</div>`;
+            div.style.paddingBottom = '15px';
+            div.style.marginBottom = '15px';
+            
+            div.innerHTML = `
+                <div class="flex-between">
+                    <div style="font-weight: 900;">${item.name}</div>
+                    <div style="font-weight: 900;">${formatCurrency(item.price)}</div>
+                </div>
+                <div id="review-btn-container-${item.id}" style="display: none; margin-top: 10px;">
+                    <button onclick="openReviewModal('${item.id}', '${item.name}', '${currentOrder.id}')" 
+                            class="brutal-button" 
+                            style="padding: 5px 15px; font-size: 0.7rem; background: black; color: white;">
+                        WRITE_REVIEW
+                    </button>
+                    <span id="review-done-${item.id}" style="display: none; font-size: 0.6rem; font-weight: 900; color: var(--neon-green);">[ REVIEWED_AS_ARCHIVE ]</span>
+                </div>
+            `;
             manifest.appendChild(div);
         });
 
         updateUI();
+    }
+
+    function checkExistingReviews() {
+        if (!currentOrder || currentOrder.status !== 'PAID') return;
+        
+        const reviews = JSON.parse(localStorage.getItem('brutal_reviews') || '[]');
+        currentOrder.items.forEach(item => {
+            const hasReview = reviews.some(r => r.productId === item.id && r.orderId === currentOrder.id);
+            const btn = document.querySelector(`#review-btn-container-${item.id} button`);
+            const span = document.getElementById(`review-done-${item.id}`);
+            const container = document.getElementById(`review-btn-container-${item.id}`);
+            
+            if (container) container.style.display = 'block';
+            if (hasReview) {
+                if (btn) btn.style.display = 'none';
+                if (span) span.style.display = 'inline-block';
+            }
+        });
     }
 
     function updateUI() {
@@ -125,6 +186,7 @@
             countdownContainer.style.display = 'none';
             btnSimulate.style.display = 'none';
             statusCard.style.color = 'black';
+            checkExistingReviews();
         } else if (currentOrder.status === 'EXPIRED') {
             displayStatus.innerText = 'ORDER_EXPIRED';
             statusCard.style.background = '#FF0000';
@@ -133,6 +195,71 @@
             countdownContainer.style.display = 'none';
             btnSimulate.style.display = 'none';
         }
+    }
+
+    // REVIEW SYSTEM LOGIC
+    let selectedRating = 0;
+    let targetProduct = null;
+
+    function openReviewModal(productId, productName, orderId) {
+        targetProduct = { id: productId, name: productName, orderId: orderId };
+        selectedRating = 5; // Default
+        document.getElementById('rv-product-name').innerText = productName;
+        document.getElementById('review-modal').style.display = 'flex';
+        updateStarUI();
+    }
+
+    function setRating(r) {
+        selectedRating = r;
+        updateStarUI();
+    }
+
+    function updateStarUI() {
+        const stars = document.querySelectorAll('.rv-star');
+        stars.forEach((star, i) => {
+            star.style.background = (i < selectedRating) ? 'black' : 'white';
+            star.style.color = (i < selectedRating) ? 'white' : 'black';
+        });
+    }
+
+    function submitReview() {
+        const text = document.getElementById('review-text').value;
+        if (!text || text.length < 5) {
+            alert('PROTOCOL_ERROR: REVIEW_TEXT_TOO_SHORT');
+            return;
+        }
+
+        const reviews = JSON.parse(localStorage.getItem('brutal_reviews') || '[]');
+        const user = JSON.parse(localStorage.getItem('currentUser') || '{"username": "ANON_VOID"}');
+
+        const newReview = {
+            id: Date.now(),
+            productId: targetProduct.id,
+            productName: targetProduct.name,
+            orderId: targetProduct.orderId,
+            username: user.username,
+            rating: selectedRating,
+            text: text,
+            date: new Date().toISOString(),
+            verified: true
+        };
+
+        reviews.push(newReview);
+        localStorage.setItem('brutal_reviews', JSON.stringify(reviews));
+
+        closeReviewModal();
+        checkExistingReviews();
+        
+        window.BrutalModal.show({
+            title: 'SIGNAL_RECEIVED',
+            message: 'YOUR_VOICE_HAS_JOINED_THE_ARCHIVE.',
+            tag: 'TRANSMISSION_COMPLETE'
+        });
+    }
+
+    function closeReviewModal() {
+        document.getElementById('review-modal').style.display = 'none';
+        document.getElementById('review-text').value = '';
     }
 
     function startTimer() {
