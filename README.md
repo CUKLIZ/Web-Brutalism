@@ -1,3 +1,8 @@
+![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?style=flat-square&logo=php)
+![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=flat-square&logo=laravel)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql)
+![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?style=flat-square&logo=vite)
+
 # ⚔️ VOID_STREET
 
 > **Underground Neo-Brutalist Streetwear E-Commerce Engine**
@@ -34,19 +39,19 @@
 
 ### 🔒 Auth System
 - Register & Login with session management
-- Role-based access: `user`, `admin`, `developer`
-- Ban system — blacklisted users hit a custom intercept screen
+- Role-based access: `customer`, `admin`, `developer`
+- Ban system — blacklisted users hit a custom intercept screen with terminal-style UI
 
 ### 🧥 Product Catalog
 - Responsive brutalist product grid
-- Category filter & keyword search
+- Server-side category filter & keyword search
 - Quick view modal per product card
-- Wishlist toggle button (♥) on every card — no page reload (AJAX)
+- SEO-friendly URLs (`/product/{category}/{slug}`)
 
 ### 🔍 Product Detail
 - Multi-image gallery (main + secondary images)
 - Size selector with per-size stock counter
-- Quantity selector (respects max stock)
+- Product specs panel (content, weight, fit, colour)
 - Add to cart (auth required)
 
 ### 🛒 Cart & Checkout
@@ -57,18 +62,17 @@
 - Multiple address management (add, edit, delete, set default)
 
 ### ⏱️ Order & Payment Simulation
-- Order generated with unique order code
+- Order generated with unique order code (`VX-YYMMDD-XXXXX`)
 - 15-minute payment countdown timer
 - `SIMULATE_PAYMENT` trigger → status becomes `paid`
-- Manual order expiry
-- Order cancel (before paid)
-- Order detail page
+- Manual order expiry → status becomes `expired`
+- Order detail page with full manifest
 
 ### ❤️ Wishlist — SAVED_VAULT
 - Save/unsave products via AJAX (no reload)
 - Dedicated `/wishlist` page with brutalist card layout
 - Wishlist count badge in navbar
-- Purge all with confirmation modal (`BrutalModal.confirm`)
+- Purge all with confirmation modal
 
 ### ⭐ Review System
 - Star rating (1–5) with interactive selector
@@ -80,13 +84,19 @@
 
 ### 👤 Profile
 - Username & email update
+- Password change
 - Avatar upload
-- Address management
+- Address book management
+- Transaction history with order status
 
 ### 🛠️ Admin Panel
-- Product CRUD (create, edit, delete + image upload)
-- Order management (view detail, mark complete)
-- User management (ban/unban, change role)
+- **Dashboard** — Revenue chart (7 days), key stats, recent orders & products
+- **Product CRUD** — Create, edit, delete products with multi-image upload
+- **Featured Products** — Toggle which products appear on homepage
+- **Order Management** — View all orders, filter by status, mark as completed
+- **User Management** — View all users, ban/unban, change roles
+- **Role Hierarchy** — `developer` > `admin` > `customer`
+- **Pending Orders Badge** — Real-time count on sidebar
 
 ---
 
@@ -130,12 +140,15 @@ VOID_STREET/
 │       ├── partials/
 │       │   ├── navbar.blade.php
 │       │   └── footer.blade.php
+│       ├── errors/
+│       │   └── 404.blade.php
 │       └── pages/
 │           ├── home.blade.php
 │           ├── products.blade.php
 │           ├── product-detail.blade.php
 │           ├── cart.blade.php
 │           ├── checkout.blade.php
+│           ├── order-success.blade.php
 │           ├── wishlist.blade.php
 │           ├── profile.blade.php
 │           ├── login.blade.php
@@ -189,20 +202,32 @@ DB_PASSWORD=
 # 7. Run migrations
 php artisan migrate
 
-# 8. Seed database (optional)
-php artisan db:seed
-
-# 9. Link storage for images
+# 8. Link storage for images
 php artisan storage:link
 
+# 9. Seed sizes (REQUIRED)
+php artisan tinker
+>>> App\Models\Size::insert([['name'=>'S'],['name'=>'M'],['name'=>'L'],['name'=>'XL']])
+
 # 10. Build assets
-npm run dev
+npm run build
 
 # 11. Serve
 php artisan serve
 ```
 
 App runs at `http://localhost:8000`
+
+### Create Developer Account
+```bash
+php artisan tinker
+>>> App\Models\User::create([
+    'username' => 'developer',
+    'email'    => 'dev@voidstreet.com',
+    'password' => bcrypt('your_password'),
+    'role'     => 'developer'
+])
+```
 
 ---
 
@@ -211,52 +236,68 @@ App runs at `http://localhost:8000`
 ### User Flow
 1. Browse catalog freely without login
 2. Login required to add to cart, wishlist, or checkout
-3. Select size → quantity → add to bag
-4. Checkout → select address → place order
+3. Select size → add to bag
+4. Checkout → select address → payment method → place order
 5. Simulate payment within 15 minutes
 6. After order `paid` or `completed` → can leave a review
 
 ### Admin Flow
-1. Login with admin account
+1. Login with admin/developer account
 2. Access `/admin` dashboard
-3. Manage products, orders, users
+3. Manage products, orders, users from sidebar
 
 ---
 
 ## 🗺️ ROADMAP
 
 - [x] Auth system (register, login, ban)
-- [x] Product catalog with search & filter
-- [x] Cart & checkout
+- [x] Role hierarchy (customer, admin, developer)
+- [x] Product catalog with server-side search & filter
+- [x] Cart & checkout flow
 - [x] Order management & payment simulation
 - [x] Wishlist (SAVED_VAULT)
 - [x] Review & rating system
-- [x] Admin panel
+- [x] Admin panel (products, orders, users)
+- [x] Custom 404 & banned pages
+- [x] SEO-friendly product URLs
 - [ ] Real payment gateway (Midtrans / Xendit)
 - [ ] Email notifications (order confirmation, status update)
 - [ ] Coupon / promo code system
-- [ ] Dark mode
+- [ ] Dark mode toggle
 - [ ] Analytics dashboard for admin
 - [ ] Low stock alerts
+- [ ] Mobile responsive improvements
 
 ---
 
 ## 📸 SCREENSHOTS
 
 ### 🖥️ Catalog
-`[ PLACEHOLDER ]`
+`[ ADD SCREENSHOT ]`
 
 ### 👗 Product Detail
-`[ PLACEHOLDER ]`
+`[ ADD SCREENSHOT ]`
 
 ### 🛒 Cart
-`[ PLACEHOLDER ]`
+`[ ADD SCREENSHOT ]`
 
-### ❤️ SAVED_VAULT
-`[ PLACEHOLDER ]`
+### ❤️ SAVED_VAULT (Wishlist)
+`[ ADD SCREENSHOT ]`
 
 ### ⚙️ Admin Panel
-`[ PLACEHOLDER ]`
+`[ ADD SCREENSHOT ]`
+
+---
+
+## 🎨 COLOR PALETTE
+
+```
+--brutal-black:  #0a0a0a
+--neon-green:    #A3FF00
+--accent-yellow: #FFE500
+--accent-pink:   #FF006E
+--gallery-white: #F5F5F5
+```
 
 ---
 
@@ -268,4 +309,6 @@ MIT License — Built for the underground, open for the culture.
 
 <div align="center">
   <strong>BUILT FOR THE UNDERGROUND. NO_POLISH_REQUIRED.</strong>
+  <br><br>
+  <code>VOID_STREET © 2026</code>
 </div>
