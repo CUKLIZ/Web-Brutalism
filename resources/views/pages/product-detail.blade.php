@@ -165,6 +165,208 @@
     </div>
 </section>
 
+@php
+    $reviews     = $product->reviews()->with('user')->latest()->get();
+    $avgRating   = $reviews->avg('rating') ?? 0;
+    $totalReviews = $reviews->count();
+    $distribution = [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0];
+    foreach ($reviews as $r) $distribution[$r->rating]++;
+
+    // Cek apakah user login & sudah beli produk ini
+    $canReview      = false;
+    $alreadyReviewed = false;
+
+    if (Auth::check()) {
+        $hasBought = \App\Models\Order::where('user_id', Auth::id())
+            ->whereIn('status', ['paid', 'completed'])
+            ->whereHas('items', fn($q) => $q->where('product_id', $product->id))
+            ->exists();
+
+        $alreadyReviewed = \App\Models\Review::where('user_id', Auth::id())
+            ->where('product_id', $product->id)
+            ->exists();
+
+        $canReview = $hasBought && !$alreadyReviewed;
+    }
+@endphp
+
+<section class="container" style="padding: 100px 20px; background: #eee; border-top: 8px solid black;">
+
+    {{-- HEADER --}}
+    <div style="margin-bottom: 60px;">
+        <div style="background: black; color: white; display: inline-block; padding: 2px 12px; font-weight: 900; font-size: 0.7rem; margin-bottom: 20px;">[ COMMUNITY_FEEDBACK ]</div>
+        <h2 style="font-size: 4rem; font-weight: 900; line-height: 0.8; letter-spacing: -3px; margin: 0; text-transform: uppercase;">REVIEWS_AND_LOGS</h2>
+    </div>
+
+    {{-- FLASH MESSAGES --}}
+    @if (session('success'))
+        <div style="background: var(--neon-green); border: 4px solid black; padding: 15px 20px; font-weight: 900; margin-bottom: 30px; box-shadow: 4px 4px 0px black;">
+            ✓ {{ session('success') }}
+        </div>
+    @endif
+    @if (session('error'))
+        <div style="background: #FF0000; color: white; border: 4px solid black; padding: 15px 20px; font-weight: 900; margin-bottom: 30px; box-shadow: 4px 4px 0px black;">
+            ✗ {{ session('error') }}
+        </div>
+    @endif
+
+    <div class="grid" style="grid-template-columns: 350px 1fr; gap: 60px; align-items: start;">
+
+        {{-- LEFT: STATS + FORM --}}
+        <div style="position: sticky; top: 120px; display: grid; gap: 30px;">
+
+            {{-- RATING STATS --}}
+            <div class="brutal-card" style="background: white; padding: 30px; border: 4px solid black; box-shadow: 10px 10px 0px black;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="font-size: 5.5rem; font-weight: 900; line-height: 1;">{{ number_format($avgRating, 1) }}</div>
+                    <div style="font-size: 1.5rem; margin-top: 10px;">
+                        @for ($i = 1; $i <= 5; $i++)
+                            {{ $i <= round($avgRating) ? '★' : '☆' }}
+                        @endfor
+                    </div>
+                    <div style="font-size: 0.7rem; font-weight: 900; opacity: 0.5; margin-top: 5px;">BASED_ON_{{ $totalReviews }}_SIGNALS</div>
+                </div>
+
+                <div style="display: grid; gap: 10px;">
+                    @foreach ([5,4,3,2,1] as $star)
+                        @php $pct = $totalReviews > 0 ? round(($distribution[$star] / $totalReviews) * 100) : 0; @endphp
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 0.7rem; font-weight: 900; width: 45px;">{{ $star }}_STAR</span>
+                            <div style="flex: 1; height: 12px; background: #eee; border: 2px solid black; position: relative; overflow: hidden;">
+                                <div style="position: absolute; top: 0; left: 0; height: 100%; background: var(--neon-green); width: {{ $pct }}%;"></div>
+                            </div>
+                            <span style="font-size: 0.6rem; font-weight: 900; width: 35px;">{{ $pct }}%</span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- REQUIREMENT INFO --}}
+            <div class="brutal-card" style="background: black; color: white; padding: 20px; border: 4px solid black; box-shadow: 10px 10px 0px var(--neon-green);">
+                <h3 style="font-size: 0.8rem; margin-bottom: 15px; background: var(--neon-green); color: black; display: inline-block; padding: 2px 10px; font-weight: 900;">[REQUIREMENT]</h3>
+                <p style="font-size: 0.75rem; font-weight: 900; opacity: 0.8; line-height: 1.6;">
+                    ONLY VERIFIED PURCHASERS WHO HAVE COMPLETED THE TRANSACTION CYCLE CAN TRANSMIT DATA TO THIS ARCHIVE.
+                </p>
+            </div>
+
+            {{-- REVIEW FORM --}}
+            @auth
+                @if ($canReview)
+                    <div style="border: 4px solid black; background: white; padding: 25px; box-shadow: 8px 8px 0px black;">
+                        <div style="background: black; color: var(--neon-green); display: inline-block; padding: 2px 10px; font-weight: 900; font-size: 0.7rem; margin-bottom: 20px;">[ SUBMIT_REVIEW ]</div>
+
+                        <form action="{{ route('review.store', $product->id) }}" method="POST">
+                            @csrf
+
+                            {{-- STAR RATING --}}
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; font-weight: 900; font-size: 0.75rem; margin-bottom: 10px;">SIGNAL_STRENGTH (RATING)</label>
+                                <div style="display: flex; gap: 8px;" id="star-container">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <button type="button" onclick="setRating({{ $i }})"
+                                            id="star-{{ $i }}"
+                                            style="width: 44px; height: 44px; border: 3px solid black; background: white; font-size: 1.4rem; cursor: pointer; transition: all 0.1s; font-family: inherit;">
+                                            ☆
+                                        </button>
+                                    @endfor
+                                </div>
+                                <input type="hidden" name="rating" id="rating-input" value="">
+                                @error('rating')
+                                    <span style="color: red; font-weight: 900; font-size: 0.75rem;">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- REVIEW TEXT --}}
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; font-weight: 900; font-size: 0.75rem; margin-bottom: 8px;">TRANSMISSION_BODY</label>
+                                <textarea name="body" placeholder="DESCRIBE YOUR EXPERIENCE WITH THIS ITEM..."
+                                    style="width: 100%; border: 3px solid {{ $errors->has('body') ? 'red' : 'black' }}; padding: 12px; font-family: inherit; font-weight: 900; outline: none; min-height: 120px; resize: none; font-size: 0.9rem;">{{ old('body') }}</textarea>
+                                @error('body')
+                                    <span style="color: red; font-weight: 900; font-size: 0.75rem;">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <button type="submit" class="brutal-button" style="width: 100%; background: black; color: var(--neon-green); padding: 15px 0; font-size: 1rem;">
+                                TRANSMIT_REVIEW
+                            </button>
+                        </form>
+                    </div>
+                @elseif ($alreadyReviewed)
+                    <div style="border: 4px solid var(--neon-green); background: white; padding: 20px; font-weight: 900; font-size: 0.85rem;">
+                        ✓ YOU_HAVE_ALREADY_REVIEWED_THIS_PRODUCT
+                    </div>
+                @else
+                    <div style="border: 4px dashed black; background: white; padding: 20px; font-weight: 900; font-size: 0.8rem; opacity: 0.6; text-align: center;">
+                        [PURCHASE_REQUIRED_TO_REVIEW]
+                    </div>
+                @endif
+            @else
+                <div style="border: 4px dashed black; background: white; padding: 20px; font-weight: 900; font-size: 0.8rem; text-align: center;">
+                    <a href="{{ route('login') }}" style="color: black; text-decoration: underline;">LOGIN</a> TO SUBMIT A REVIEW
+                </div>
+            @endauth
+        </div>
+
+        {{-- RIGHT: REVIEWS LIST --}}
+        <div>
+            @forelse ($reviews as $review)
+                <div class="brutal-card" style="background: white; padding: 40px; border: 4px solid black; box-shadow: 12px 12px 0px black; margin-bottom: 30px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 40px; height: 40px; border: 3px solid black; flex-shrink: 0; overflow: hidden;">
+                                @if($review->user->avatar)
+                                    <img src="{{ asset('storage/' . $review->user->avatar) }}"
+                                        style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                @else
+                                    <div style="width: 100%; height: 100%; background: black; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 950;">
+                                        {{ strtoupper(substr($review->user->username, 0, 1)) }}
+                                    </div>
+                                @endif
+                            </div>
+                            <div>
+                                <span style="font-weight: 950; font-size: 1.2rem; text-transform: uppercase; display: block; line-height: 1;">{{ strtoupper($review->user->username) }}</span>
+                                <span style="font-size: 0.6rem; font-weight: 900; opacity: 0.4; margin-top: 5px; display: block;">TIMESTAMP: {{ $review->created_at->format('d M Y') }}</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.5rem; line-height: 1; margin-bottom: 8px;">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    {{ $i <= $review->rating ? '★' : '☆' }}
+                                @endfor
+                            </div>
+                            <span style="background: var(--neon-green); color: black; padding: 2px 10px; font-size: 0.6rem; font-weight: 950; border: 2px solid black; display: inline-block;">VERIFIED_PURCHASE</span>
+                        </div>
+                    </div>
+                    <div style="border-top: 4px solid black; padding-top: 25px;">
+                        <p style="font-weight: 900; font-size: 1.1rem; line-height: 1.4; margin: 0; font-style: italic;">"{{ $review->body }}"</p>
+                    </div>
+                </div>
+            @empty
+                <div style="padding: 100px 40px; text-align: center; border: 6px dashed black; background: white;">
+                    <h2 style="font-weight: 950; font-size: 3rem; margin-bottom: 10px; opacity: 0.1;">NO_SIGNAL_FROM_THE_CULT_YET</h2>
+                    <p style="font-weight: 900; font-size: 0.8rem; opacity: 0.4;">BE_THE_FIRST_TO_INFILTRATE_THIS_ARCHIVE.</p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+</section>
+
+<script>
+    function setRating(value) {
+        document.getElementById('rating-input').value = value;
+        for (let i = 1; i <= 5; i++) {
+            const btn = document.getElementById('star-' + i);
+            if (i <= value) {
+                btn.innerText = '★';
+                btn.style.background = 'var(--neon-green)';
+            } else {
+                btn.innerText = '☆';
+                btn.style.background = 'white';
+            }
+        }
+    }
+</script>
+
 <script>
 let maxStock = 1;
 
@@ -207,4 +409,5 @@ function changeQty(delta) {
     }
 }
 </script>
+
 @endsection

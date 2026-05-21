@@ -26,4 +26,9 @@ class Product extends Model
     {
         return $this->sizes->sum('pivot.stock');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

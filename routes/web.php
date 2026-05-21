@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\admin\DashboardController;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,7 +33,7 @@ Route::get('/products', function () {
 })->name('products');
 
 Route::get('/product/{category}/{slug}', function ($category, $slug) {
-    $product = Product::with(['images', 'sizes'])
+    $product = Product::with(['images', 'sizes', 'reviews.user'])
         ->where('slug', $slug)
         ->where('category', strtoupper($category))
         ->firstOrFail();
@@ -89,14 +90,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/order/{order_code}/expire', [CheckoutController::class, 'expire'])->name('order.expire');
     Route::get('/order/{order_code}/detail', [CheckoutController::class, 'showDetail'])->name('order.detail');
     Route::patch('/order/{order_code}/cancel', [CheckoutController::class, 'cancel'])->name('order.cancel');
+
+    // Review
+    Route::post('/product/{product}/review', [ReviewController::class, 'store'])->name('review.store');
 });
 
 Route::get('/banned', function () {
-    // Ga login → ke login
     if (!Auth::check()) {
         return redirect()->route('login');
     }
-    // Login tapi ga banned → ke home
     if (!Auth::user()->is_banned) {
         return redirect('/');
     }
